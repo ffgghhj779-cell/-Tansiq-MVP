@@ -19,14 +19,8 @@ function ProductsInner() {
   const filter = params.get("filter");
   const [gender, setGender] = useState<"all" | "women" | "men">("all");
   const [status, setStatus] = useState<"loading" | "ready" | "error" | "empty">(
-    "loading",
+    "ready",
   );
-
-  useEffect(() => {
-    setStatus("loading");
-    const timer = setTimeout(() => setStatus("ready"), 450);
-    return () => clearTimeout(timer);
-  }, [gender, filter]);
 
   const list = useMemo(() => {
     let items = [...PRODUCTS];
@@ -37,17 +31,30 @@ function ProductsInner() {
   }, [gender, filter]);
 
   useEffect(() => {
-    if (status === "ready" && list.length === 0) setStatus("empty");
+    if (status !== "error" && status !== "loading") {
+      setStatus(list.length === 0 ? "empty" : "ready");
+    }
   }, [list, status]);
+
+  const runFilterLoad = (next: "all" | "women" | "men") => {
+    setGender(next);
+    setStatus("loading");
+    window.setTimeout(() => {
+      setStatus("ready");
+    }, 400);
+  };
 
   if (status === "loading") return <ProductGridSkeleton />;
   if (status === "error")
-    return <ErrorState onRetry={() => setStatus("loading")} />;
+    return <ErrorState onRetry={() => setStatus("ready")} />;
   if (status === "empty")
     return (
       <EmptyState
         title={t("emptyList")}
-        hint={tn("جرّب فلترًا أوسع أو مركز الستايل.", "Try a wider filter or the Style hub.")}
+        hint={tn(
+          "جرّب فلترًا أوسع أو مركز الستايل.",
+          "Try a wider filter or the Style hub.",
+        )}
         actionLabel={t("ctaStyle")}
         onAction={() => {
           window.location.href = "/style";
@@ -87,7 +94,7 @@ function ProductsInner() {
           <button
             key={id}
             type="button"
-            onClick={() => setGender(id)}
+            onClick={() => runFilterLoad(id)}
             className={cn(
               "rounded-full px-4 py-1.5 text-sm",
               gender === id

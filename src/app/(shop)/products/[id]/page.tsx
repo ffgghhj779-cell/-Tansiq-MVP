@@ -55,10 +55,10 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="pb-28">
-      <div className="grid gap-8 md:grid-cols-2">
+    <div className="pb-32 md:pb-10">
+      <div className="grid gap-6 md:grid-cols-2 md:gap-8">
         <div>
-          <div className="relative aspect-[3/4] overflow-hidden bg-mist product-shadow">
+          <div className="relative aspect-[4/5] max-h-[52vh] overflow-hidden bg-mist product-shadow md:max-h-none md:aspect-[3/4]">
             <Image
               src={product.images[imageIdx]}
               alt={tn(product.titleAr, product.titleEn)}

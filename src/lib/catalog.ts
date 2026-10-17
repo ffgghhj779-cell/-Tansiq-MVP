@@ -81,9 +81,9 @@ export const PRODUCTS: Product[] = [
     occasionAr: "يومي / مقهى",
     occasionEn: "Everyday / café",
     images: [
-      img("photo-1485968579580-b6d6233f7b72"),
       img("photo-1434389677669-e08b4cac3105"),
       img("photo-1515372039744-b8f02a3ae446"),
+      img("photo-1485230895905-ec40ba36b9bc"),
     ],
     descriptionAr:
       "قميص كتان بهدوء صيفي، طبقات سهلة فوق تانك أو مع جينز مستقيم.",
@@ -114,7 +114,7 @@ export const PRODUCTS: Product[] = [
     occasionEn: "Campus / soft work",
     images: [
       img("photo-1541099649105-f69ad21f3246"),
-      img("photo-1475176407659-7c1df922f659"),
+      img("photo-1551488831-00ddcb6c6bd3"),
     ],
     descriptionAr: "قصة واسعة تريح الحركة مع طول مناسب للطبقات.",
     descriptionEn: "Wide cut for movement with a length that layers well.",
@@ -142,7 +142,7 @@ export const PRODUCTS: Product[] = [
     occasionEn: "Travel / all-day",
     images: [
       img("photo-1558618666-fcd25c85cd64"),
-      img("photo-1509631179647-0177435913f1"),
+      img("photo-1585487000160-6ebcfceb0d03"),
     ],
     descriptionAr: "طقم متناسق جاهز؛ أضف حذاء أبيض لإطلالة مكتملة.",
     descriptionEn: "A ready coordinated set—add white sneakers to finish.",
@@ -225,7 +225,7 @@ export const PRODUCTS: Product[] = [
     occasionEn: "Everyday / short travel",
     images: [
       img("photo-1548036328-c9fa89d128fa"),
-      img("photo-1590874103328-eac38a941ad8"),
+      img("photo-1544441893-675973e31985"),
     ],
     descriptionAr: "لمسة جملي دافئة ترفع إطلالة محايدة.",
     descriptionEn: "Warm camel lift for a neutral outfit.",
@@ -407,7 +407,7 @@ export const LOOKS: Look[] = [
     productIds: ["p1", "p2", "p5", "p6"],
     reasonAr: "محايدات عاجية وبيج مع جينز وأبيض عالمي",
     reasonEn: "Ivory–beige neutrals with denim and universal white",
-    cover: img("photo-1485968579580-b6d6233f7b72", 1200),
+    cover: img("photo-1496747611176-843222e1e57c", 1200),
   },
   {
     id: "look2",
@@ -425,7 +425,7 @@ export const LOOKS: Look[] = [
     productIds: ["p7", "p8", "p10"],
     reasonAr: "كحلي وزيتي مع حذاء أبيض يوحّد الإطلالة",
     reasonEn: "Navy and olive unified by white sneakers",
-    cover: img("photo-1556821840-3a63f95609a7", 1200),
+    cover: img("photo-1552374196-1ab2a1c593e8", 1200),
   },
 ];
 
