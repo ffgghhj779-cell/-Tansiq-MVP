@@ -105,7 +105,7 @@ function ProductsInner() {
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder={t("search")}
-        className="h-11 rounded-none bg-white/80"
+        className="h-11 rounded-none border-border/80 bg-sand/80"
       />
 
       <div className="flex gap-2">

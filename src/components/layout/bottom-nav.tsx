@@ -21,11 +21,8 @@ export function BottomNav() {
   const { count } = useCart();
 
   return (
-    <nav
-      className="glass-bar fixed inset-x-0 bottom-0 z-40 border-t border-border/60"
-      aria-label="Main"
-    >
-      <ul className="mx-auto flex max-w-lg items-stretch justify-between px-1 pb-[max(env(safe-area-inset-bottom),6px)]">
+    <nav className="bottom-dock" aria-label="Main">
+      <ul className="mx-auto flex h-[var(--nav-height)] max-w-lg items-stretch justify-between px-1">
         {items.map(({ href, key, icon: Icon }) => {
           const active =
             pathname === href ||
@@ -35,7 +32,7 @@ export function BottomNav() {
               <Link
                 href={href}
                 className={cn(
-                  "pressable relative flex min-h-14 flex-col items-center justify-center gap-0.5 py-2 text-[10px] tracking-wide transition-colors duration-200",
+                  "pressable relative flex h-full flex-col items-center justify-center gap-0.5 text-[10px] tracking-wide transition-colors duration-200",
                   active
                     ? "font-medium text-ink"
                     : "text-muted-foreground",
@@ -45,7 +42,7 @@ export function BottomNav() {
                   <Icon
                     className={cn(
                       "size-[22px] transition-transform duration-200",
-                      active && "scale-105",
+                      active && "scale-105 text-olive",
                     )}
                     strokeWidth={active ? 2.15 : 1.6}
                   />
@@ -55,9 +52,9 @@ export function BottomNav() {
                     </span>
                   )}
                 </span>
-                <span className={cn(active && "text-ink")}>{t(key)}</span>
+                <span>{t(key)}</span>
                 {active && (
-                  <span className="absolute inset-x-6 bottom-1 h-px bg-champagne/80" />
+                  <span className="absolute inset-x-5 bottom-1.5 h-0.5 rounded-full bg-champagne" />
                 )}
               </Link>
             </li>

@@ -55,7 +55,7 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="pb-32 md:pb-10">
+    <div className="pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] md:pb-10">
       <div className="grid gap-6 md:grid-cols-2 md:gap-8">
         <div>
           <div className="relative aspect-[4/5] max-h-[52vh] overflow-hidden bg-mist product-shadow md:max-h-none md:aspect-[3/4]">
@@ -173,7 +173,7 @@ export default function ProductDetailPage() {
 
           <Button
             size="lg"
-            className="w-full rounded-full sticky bottom-24 md:static"
+            className="hidden w-full rounded-full md:inline-flex"
             onClick={handleAdd}
           >
             {added ? tn("أُضيفت ✓", "Added ✓") : t("addCart")}
@@ -238,14 +238,20 @@ export default function ProductDetailPage() {
         </section>
       )}
 
-      <div className="fixed inset-x-0 bottom-16 z-20 border-t border-border/70 bg-[#f3f1ec]/95 p-3 backdrop-blur md:hidden">
+      <div
+        className="fixed inset-x-0 z-40 border-t border-border/70 bg-sand/95 p-3 md:hidden"
+        style={{
+          bottom: "calc(var(--nav-height) + env(safe-area-inset-bottom, 0px))",
+          transform: "translateZ(0)",
+        }}
+      >
         <div className="mx-auto flex max-w-5xl gap-2">
           <Button className="flex-1 rounded-full" onClick={handleAdd}>
             {t("addCart")}
           </Button>
           <Button
             variant="outline"
-            className="rounded-full"
+            className="rounded-full border-border bg-card"
             onClick={() => {
               handleAdd();
               router.push("/cart");

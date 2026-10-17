@@ -85,7 +85,7 @@ export default function SellerOrdersPage() {
       ) : (
         <div className="space-y-4">
           {parcels.map((p) => (
-            <div key={p.id} className="space-y-3 border border-border/60 bg-white/70 p-4">
+            <div key={p.id} className="space-y-3 border border-border/60 bg-sand/80 p-4">
               <div className="flex justify-between text-sm">
                 <span className="font-medium">{p.order.id}</span>
                 <span className="text-muted-foreground">{p.status}</span>

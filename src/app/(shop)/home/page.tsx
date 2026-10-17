@@ -31,14 +31,14 @@ export default function BuyerHomePage() {
       {/* Promo / trust — Namshi-like clarity, Tansiq tone */}
       <section
         aria-label="Trust"
-        className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-y border-border/50 bg-white/60 py-3 text-center text-[10px] tracking-[0.04em] text-muted-foreground md:gap-x-5 md:text-[11px]"
+        className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-y border-border/60 bg-sand/70 py-3 text-center text-[10px] tracking-[0.04em] text-muted-foreground md:gap-x-5 md:text-[11px]"
       >
         <span>{t("trustDelivery")}</span>
-        <span className="text-border">|</span>
+        <span className="text-champagne/80">|</span>
         <span>{t("trustReturns")}</span>
-        <span className="text-border">|</span>
+        <span className="text-champagne/80">|</span>
         <span>{t("trustProtect")}</span>
-        <span className="text-border">|</span>
+        <span className="text-champagne/80">|</span>
         <span>{tn("دفع عند الاستلام", "Cash on delivery")}</span>
       </section>
 
@@ -52,7 +52,7 @@ export default function BuyerHomePage() {
             {t("seeAll")}
           </Link>
         </div>
-        <div className="flex gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="h-scroll flex gap-3 pb-1">
           {CATEGORIES.map((cat) => (
             <Link
               key={cat.id}
@@ -127,7 +127,7 @@ export default function BuyerHomePage() {
             {t("ctaStyle")}
           </Link>
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="h-scroll flex gap-4 pb-2">
           {LOOKS.map((look) => (
             <Link
               key={look.id}
@@ -234,7 +234,7 @@ export default function BuyerHomePage() {
           </p>
           <Link
             href="/style?tool=budget"
-            className="mt-4 inline-flex h-10 w-fit items-center bg-white px-5 text-xs tracking-wide text-ink"
+            className="mt-4 inline-flex h-10 w-fit items-center bg-sand px-5 text-xs tracking-wide text-ink ring-1 ring-border/60"
           >
             {t("budgetTool")}
           </Link>
@@ -270,7 +270,7 @@ export default function BuyerHomePage() {
             {t("seeAll")}
           </Link>
         </div>
-        <div className="flex gap-6 overflow-x-auto border-y border-border/50 py-4 text-sm text-muted-foreground">
+        <div className="h-scroll flex gap-6 border-y border-border/50 py-4 text-sm text-muted-foreground">
           {SELLERS.map((s) => (
             <span key={s.id} className="shrink-0 font-medium tracking-wide text-ink">
               {tn(s.nameAr, s.nameEn)}
@@ -377,7 +377,7 @@ export default function BuyerHomePage() {
         </p>
         <Link
           href="/style"
-          className="pressable mt-5 inline-flex h-11 items-center bg-white px-5 text-[11px] tracking-[0.14em] text-ink"
+          className="pressable mt-5 inline-flex h-11 items-center bg-sand px-5 text-[11px] tracking-[0.14em] text-ink ring-1 ring-border/50"
         >
           {t("ctaStyle")}
         </Link>

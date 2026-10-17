@@ -60,7 +60,7 @@ export default function AdminPage() {
           </p>
         ) : (
           pending.map((s) => (
-            <div key={s.id} className="flex items-center justify-between border border-border/60 bg-white/70 px-3 py-2 text-sm">
+            <div key={s.id} className="flex items-center justify-between border border-border/60 bg-sand/80 px-3 py-2 text-sm">
               <span>{tn(s.nameAr, s.nameEn)}</span>
               <Button
                 size="sm"
@@ -84,7 +84,7 @@ export default function AdminPage() {
       <section className="space-y-3">
         <h2 className="font-display text-xl">{tn("بلاغات", "Reports")}</h2>
         {reports.map((r) => (
-          <div key={r.id} className="space-y-2 border border-border/60 bg-white/70 p-3 text-sm">
+          <div key={r.id} className="space-y-2 border border-border/60 bg-sand/80 p-3 text-sm">
             <p className="font-medium">
               {r.type} · {r.targetId}
             </p>

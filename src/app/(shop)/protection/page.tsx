@@ -44,7 +44,7 @@ export default function BuyerProtectionPage() {
         {items.map((item) => (
           <li
             key={item.en}
-            className="border border-border/60 bg-white/70 px-4 py-3 text-sm text-ink"
+            className="border border-border/60 bg-sand/80 px-4 py-3 text-sm text-ink"
           >
             {tn(item.ar, item.en)}
           </li>

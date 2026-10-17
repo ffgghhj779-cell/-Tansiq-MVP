@@ -6,7 +6,7 @@ import Link from "next/link";
 export function SiteFooter() {
   const { tn } = useI18n();
   return (
-    <footer className="mt-12 border-t border-border/60 bg-white/50 px-4 py-8 text-xs text-muted-foreground">
+    <footer className="mt-12 border-t border-border/60 bg-sand/60 px-4 py-8 text-xs text-muted-foreground">
       <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
         <div>
           <p className="font-display text-lg text-ink">{tn("تنسيق", "Tansiq")}</p>

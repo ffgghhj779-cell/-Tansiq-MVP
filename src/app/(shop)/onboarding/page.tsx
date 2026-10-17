@@ -72,7 +72,7 @@ export default function OnboardingPage() {
               onClick={() => setAudience(id)}
               className={cn(
                 "flex w-full items-center justify-between border px-4 py-3 text-sm",
-                audience === id ? "border-primary bg-accent" : "border-border bg-white/70",
+                audience === id ? "border-primary bg-accent" : "border-border bg-sand/80",
               )}
             >
               {tn(ar, en)}
@@ -103,7 +103,7 @@ export default function OnboardingPage() {
                   }
                   className={cn(
                     "border px-3 py-4 text-sm",
-                    on ? "border-primary bg-accent" : "border-border bg-white/70",
+                    on ? "border-primary bg-accent" : "border-border bg-sand/80",
                   )}
                 >
                   {tn(look.ar, look.en)}

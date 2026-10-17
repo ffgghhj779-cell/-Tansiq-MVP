@@ -159,7 +159,7 @@ export default function SellerUploadPage() {
                   <div className="aspect-[3/4] bg-gradient-to-b from-stone-300 to-stone-100 p-3 text-center text-xs text-muted-foreground">
                     {tn("قبل", "Before")}
                   </div>
-                  <div className="aspect-[3/4] bg-white p-3 text-center text-xs text-muted-foreground shadow-inner">
+                  <div className="aspect-[3/4] bg-sand p-3 text-center text-xs text-muted-foreground shadow-inner ring-1 ring-border/40">
                     {tn("بعد — خلفية نظيفة", "After — clean bg")}
                   </div>
                 </div>

@@ -53,7 +53,7 @@ export function ProductCard({ product }: { product: Product }) {
       <button
         type="button"
         onClick={() => toggle(product.id)}
-        className="absolute end-1.5 top-1.5 flex size-9 items-center justify-center rounded-full bg-white/85 shadow-sm backdrop-blur-sm transition active:scale-95"
+        className="absolute end-1.5 top-1.5 flex size-9 items-center justify-center rounded-full bg-sand/90 shadow-sm ring-1 ring-border/50 transition active:scale-95"
         aria-label="Favorite"
       >
         <Heart

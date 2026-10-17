@@ -55,7 +55,7 @@ export default function MarketingLanding() {
               href="/onboarding"
               className={cn(
                 buttonVariants({ size: "lg" }),
-                "pressable h-12 w-full rounded-none bg-white px-8 text-[12px] tracking-[0.12em] text-ink hover:bg-white/93 sm:w-auto",
+                "pressable h-12 w-full rounded-none bg-sand px-8 text-[12px] tracking-[0.12em] text-ink hover:bg-sand/90 sm:w-auto",
               )}
             >
               {t("marketingEnter")}

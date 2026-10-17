@@ -82,7 +82,7 @@ function StyleHubInner() {
         </p>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className="h-scroll flex gap-2 pb-1">
         {tools.map((item) => (
           <button
             key={item.id}
@@ -102,7 +102,7 @@ function StyleHubInner() {
 
       {tool === "match" && (
         <div className="space-y-5">
-          <div className="flex gap-3 overflow-x-auto">
+          <div className="h-scroll flex gap-3">
             {PRODUCTS.slice(0, 8).map((p) => (
               <button
                 key={p.id}
