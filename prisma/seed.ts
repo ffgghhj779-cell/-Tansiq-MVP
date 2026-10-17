@@ -10,8 +10,10 @@ const prisma = new PrismaClient();
 
 async function main() {
   await prisma.orderItem.deleteMany();
+  await prisma.notification.deleteMany();
   await prisma.parcel.deleteMany();
   await prisma.order.deleteMany();
+  await prisma.otpChallenge.deleteMany();
   await prisma.product.deleteMany();
   await prisma.seller.deleteMany();
   await prisma.report.deleteMany();
@@ -88,11 +90,17 @@ async function main() {
     await prisma.order.create({
       data: {
         id: order.id,
-        phone: "05xxxxxxx",
+        phone: "0500000000",
         address: "Riyadh — Al Narjis",
+        city: "Riyadh",
+        district: "Al Narjis",
+        shortAddress: "RRRD2929",
+        nationalAddress: "",
         payment: "cod",
-        status: "placed",
+        status: order.parcels[0]?.status ?? "placed",
         total: order.total,
+        otpVerified: true,
+        confirmedAt: new Date(order.placedAt),
         createdAt: new Date(order.placedAt),
         parcels: {
           create: order.parcels.map((parcel) => ({
@@ -115,6 +123,17 @@ async function main() {
               }),
             },
           })),
+        },
+        notifications: {
+          create: [
+            {
+              channel: "in_app",
+              to: "0500000000",
+              template: "order_confirmed",
+              body: `Order ${order.id} confirmed (seed).`,
+              status: "delivered",
+            },
+          ],
         },
       },
     });

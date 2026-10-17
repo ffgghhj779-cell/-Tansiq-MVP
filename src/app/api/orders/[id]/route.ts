@@ -18,6 +18,7 @@ export async function GET(
             items: { include: { product: true } },
           },
         },
+        notifications: { orderBy: { createdAt: "desc" } },
       },
     });
     if (!order) return NextResponse.json({ error: "Not found" }, { status: 404 });

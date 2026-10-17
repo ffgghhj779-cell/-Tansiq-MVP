@@ -17,68 +17,75 @@ model Seller {
   deliveryScore Int       @default(90)
   returnDays    Int       @default(7)
   verified      Boolean   @default(false)
-  status        String    @default("pending") // pending | approved | suspended
+  status        String    @default("pending")
   products      Product[]
   parcels       Parcel[]
   createdAt     DateTime  @default(now())
 }
 
 model Product {
-  id             String   @id
-  slug           String   @unique
-  gender         String
-  titleAr        String
-  titleEn        String
-  price          Int
-  compareAt      Int?
-  sellerId       String
-  seller         Seller   @relation(fields: [sellerId], references: [id])
-  colorsJson     String
-  sizesJson      String
-  fabricAr       String
-  fabricEn       String
+  id              String      @id
+  slug            String      @unique
+  gender          String
+  titleAr         String
+  titleEn         String
+  price           Int
+  compareAt       Int?
+  sellerId        String
+  seller          Seller      @relation(fields: [sellerId], references: [id])
+  colorsJson      String
+  sizesJson       String
+  fabricAr        String
+  fabricEn        String
   fabricChipsJson String
-  silhouetteAr   String
-  silhouetteEn   String
-  occasionAr     String
-  occasionEn     String
-  imagesJson     String
-  descriptionAr  String
-  descriptionEn  String
-  modelHeight    String?
-  modelSize      String?
-  tagsJson       String
-  independent    Boolean  @default(false)
-  budgetFriendly Boolean  @default(false)
-  published      Boolean  @default(true)
-  stockJson      String   @default("{}")
-  orderItems     OrderItem[]
-  createdAt      DateTime @default(now())
+  silhouetteAr    String
+  silhouetteEn    String
+  occasionAr      String
+  occasionEn      String
+  imagesJson      String
+  descriptionAr   String
+  descriptionEn   String
+  modelHeight     String?
+  modelSize       String?
+  tagsJson        String
+  independent     Boolean     @default(false)
+  budgetFriendly  Boolean     @default(false)
+  published       Boolean     @default(true)
+  stockJson       String      @default("{}")
+  orderItems      OrderItem[]
+  createdAt       DateTime    @default(now())
 }
 
 model Order {
-  id        String   @id
-  phone     String
-  address   String
-  payment   String   @default("cod")
-  status    String   @default("placed")
-  total     Int
-  parcels   Parcel[]
-  createdAt DateTime @default(now())
+  id               String    @id
+  phone            String
+  address          String
+  city             String    @default("")
+  district         String    @default("")
+  shortAddress     String    @default("")
+  nationalAddress  String    @default("")
+  payment          String    @default("cod")
+  status           String    @default("placed")
+  total            Int
+  otpVerified      Boolean   @default(false)
+  confirmedAt      DateTime?
+  parcels          Parcel[]
+  notifications    Notification[]
+  createdAt        DateTime  @default(now())
 }
 
 model Parcel {
-  id              String      @id @default(cuid())
-  orderId         String
-  order           Order       @relation(fields: [orderId], references: [id])
-  sellerId        String
-  seller          Seller      @relation(fields: [sellerId], references: [id])
-  status          String      @default("placed")
-  trackingNumber  String      @default("")
-  deliveryFee     Int         @default(20)
-  etaAr           String      @default("")
-  etaEn           String      @default("")
-  items           OrderItem[]
+  id             String      @id @default(cuid())
+  orderId        String
+  order          Order       @relation(fields: [orderId], references: [id])
+  sellerId       String
+  seller         Seller      @relation(fields: [sellerId], references: [id])
+  status         String      @default("placed")
+  trackingNumber String      @default("")
+  deliveryFee    Int         @default(20)
+  etaAr          String      @default("")
+  etaEn          String      @default("")
+  items          OrderItem[]
 }
 
 model OrderItem {
@@ -93,6 +100,29 @@ model OrderItem {
   unitPrice Int
 }
 
+model OtpChallenge {
+  id        String   @id @default(cuid())
+  phone     String
+  codeHash  String
+  purpose   String   @default("order")
+  attempts  Int      @default(0)
+  verified  Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  orderId   String?
+  order     Order?   @relation(fields: [orderId], references: [id])
+  channel   String
+  to        String
+  template  String
+  body      String
+  status    String   @default("queued")
+  createdAt DateTime @default(now())
+}
+
 model Report {
   id        String   @id @default(cuid())
   type      String
@@ -103,10 +133,10 @@ model Report {
 }
 
 model StyleRule {
-  id        String @id @default(cuid())
-  key       String @unique
-  reasonAr  String
-  reasonEn  String
-  weight    Int    @default(10)
-  enabled   Boolean @default(true)
+  id       String  @id @default(cuid())
+  key      String  @unique
+  reasonAr String
+  reasonEn String
+  weight   Int     @default(10)
+  enabled  Boolean @default(true)
 }
