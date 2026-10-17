@@ -11,51 +11,51 @@ export default function MarketingLanding() {
   const { t, tn, toggleLocale } = useI18n();
 
   return (
-    <div className="relative min-h-dvh overflow-hidden bg-ink">
-      {/* Full-bleed boutique atmosphere — garments, not revealing models */}
+    <div className="relative min-h-dvh overflow-hidden bg-[#1c1917]">
       <div className="absolute inset-0">
         <Image
           src={HERO_IMAGE}
           alt=""
           fill
           priority
+          quality={80}
           className="object-cover animate-kenburns"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#12100e]/88 via-[#12100e]/45 to-[#12100e]/25" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(250,249,246,0.12),transparent_55%)]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1c1917]/90 via-[#1c1917]/40 to-[#1c1917]/20" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_15%,rgba(201,184,160,0.18),transparent_50%)]" />
       </div>
 
       <div className="relative z-10 flex min-h-dvh flex-col">
-        <div className="flex items-center justify-between px-5 py-6 md:px-12">
-          <p className="font-display text-[2rem] tracking-[0.02em] text-white md:text-5xl animate-fade-in">
+        <div className="flex items-center justify-between px-4 py-5 md:px-12">
+          <p className="font-display text-[1.85rem] tracking-[0.04em] text-white md:text-5xl animate-fade-in">
             {tn("تنسيق", "Tansiq")}
           </p>
           <button
             type="button"
             onClick={toggleLocale}
-            className="text-[11px] uppercase tracking-[0.18em] text-white/75 hover:text-white"
+            className="pressable text-[11px] uppercase tracking-[0.2em] text-white/75"
           >
             {t("lang")}
           </button>
         </div>
 
-        <div className="mt-auto flex max-w-2xl flex-col gap-6 px-5 pb-14 pt-28 md:px-12 md:pb-20">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-white/55 animate-fade-in">
+        <div className="mt-auto flex max-w-2xl flex-col gap-5 px-4 pb-[max(3.5rem,env(safe-area-inset-bottom))] pt-24 md:px-12 md:pb-20">
+          <p className="text-[10px] uppercase tracking-[0.32em] text-champagne animate-fade-in">
             {tn("الرياض · جدة", "Riyadh · Jeddah")}
           </p>
-          <h1 className="font-display text-[2.65rem] leading-[1.08] text-white text-balance animate-rise md:text-6xl lg:text-7xl">
+          <h1 className="font-display text-[2.45rem] leading-[1.06] text-white text-balance animate-rise md:text-6xl lg:text-7xl">
             {t("tagline")}
           </h1>
-          <p className="max-w-md text-[15px] leading-relaxed text-white/80 animate-rise-delay md:text-lg">
+          <p className="max-w-md text-[15px] leading-relaxed text-white/78 animate-rise-delay md:text-lg">
             {t("heroSupport")}
           </p>
-          <div className="flex flex-wrap gap-3 animate-rise-delay">
+          <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap animate-rise-delay">
             <Link
               href="/home"
               className={cn(
                 buttonVariants({ size: "lg" }),
-                "h-12 rounded-none bg-white px-8 text-[13px] tracking-wide text-ink hover:bg-white/92",
+                "pressable h-12 w-full rounded-none bg-white px-8 text-[12px] tracking-[0.12em] text-ink hover:bg-white/93 sm:w-auto",
               )}
             >
               {t("marketingEnter")}
@@ -64,7 +64,7 @@ export default function MarketingLanding() {
               href="/style"
               className={cn(
                 buttonVariants({ size: "lg", variant: "outline" }),
-                "h-12 rounded-none border-white/35 bg-transparent px-8 text-[13px] tracking-wide text-white hover:bg-white/10 hover:text-white",
+                "pressable h-12 w-full rounded-none border-white/35 bg-transparent px-8 text-[12px] tracking-[0.12em] text-white hover:bg-white/10 hover:text-white sm:w-auto",
               )}
             >
               {t("ctaStyle")}

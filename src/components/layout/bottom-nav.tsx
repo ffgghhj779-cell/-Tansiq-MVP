@@ -22,10 +22,10 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-[#f3f1ec]/92 backdrop-blur-md"
+      className="glass-bar fixed inset-x-0 bottom-0 z-40 border-t border-border/60"
       aria-label="Main"
     >
-      <ul className="mx-auto flex max-w-lg items-stretch justify-between px-2 pb-[env(safe-area-inset-bottom)]">
+      <ul className="mx-auto flex max-w-lg items-stretch justify-between px-1 pb-[max(env(safe-area-inset-bottom),6px)]">
         {items.map(({ href, key, icon: Icon }) => {
           const active =
             pathname === href ||
@@ -35,21 +35,30 @@ export function BottomNav() {
               <Link
                 href={href}
                 className={cn(
-                  "relative flex flex-col items-center gap-0.5 py-2.5 text-[11px] transition-colors",
+                  "pressable relative flex min-h-14 flex-col items-center justify-center gap-0.5 py-2 text-[10px] tracking-wide transition-colors duration-200",
                   active
-                    ? "text-olive font-medium"
-                    : "text-muted-foreground hover:text-foreground",
+                    ? "font-medium text-ink"
+                    : "text-muted-foreground",
                 )}
               >
                 <span className="relative">
-                  <Icon className="size-5" strokeWidth={active ? 2.25 : 1.75} />
+                  <Icon
+                    className={cn(
+                      "size-[22px] transition-transform duration-200",
+                      active && "scale-105",
+                    )}
+                    strokeWidth={active ? 2.15 : 1.6}
+                  />
                   {href === "/cart" && count > 0 && (
-                    <span className="absolute -end-2.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-olive px-1 text-[10px] text-primary-foreground">
+                    <span className="absolute -end-2.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] text-primary-foreground">
                       {count}
                     </span>
                   )}
                 </span>
-                {t(key)}
+                <span className={cn(active && "text-ink")}>{t(key)}</span>
+                {active && (
+                  <span className="absolute inset-x-6 bottom-1 h-px bg-champagne/80" />
+                )}
               </Link>
             </li>
           );

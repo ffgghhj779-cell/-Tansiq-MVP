@@ -97,7 +97,7 @@ type I18nContextValue = {
 const I18nContext = createContext<I18nContextValue | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>("ar");
+  const [locale, setLocale] = useState<Locale>("en");
 
   useEffect(() => {
     document.documentElement.lang = locale;

@@ -27,11 +27,11 @@ export default function BuyerHomePage() {
   const men = PRODUCTS.filter((p) => p.gender === "men").slice(0, 4);
 
   return (
-    <div className="space-y-12 pb-10 md:space-y-16">
+    <div className="space-y-10 pb-8 md:space-y-14">
       {/* Promo / trust — Namshi-like clarity, Tansiq tone */}
       <section
         aria-label="Trust"
-        className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-y border-border/60 bg-card/40 py-3.5 text-center text-[11px] tracking-wide text-muted-foreground md:text-xs"
+        className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-y border-border/50 bg-white/60 py-3 text-center text-[10px] tracking-[0.04em] text-muted-foreground md:gap-x-5 md:text-[11px]"
       >
         <span>{t("trustDelivery")}</span>
         <span className="text-border">|</span>
@@ -365,11 +365,11 @@ export default function BuyerHomePage() {
       </section>
 
       {/* Style hub CTA strip */}
-      <section className="border border-border/60 bg-olive px-5 py-8 text-primary-foreground md:px-8">
-        <p className="font-display text-3xl md:text-4xl">
+      <section className="border border-border/50 bg-primary px-5 py-8 text-primary-foreground md:px-8">
+        <p className="font-display text-3xl tracking-tight md:text-4xl">
           {tn("مركز الستايل", "Style hub")}
         </p>
-        <p className="mt-2 max-w-md text-sm text-primary-foreground/80">
+        <p className="mt-2 max-w-md text-sm text-primary-foreground/75">
           {tn(
             "ماذا يلبس مع هذا · أكمل الإطلالة · مساعد الميزانية · باحث الألوان",
             "What goes with this · Complete the look · Budget · Color finder",
@@ -377,7 +377,7 @@ export default function BuyerHomePage() {
         </p>
         <Link
           href="/style"
-          className="mt-5 inline-flex h-10 items-center bg-white px-5 text-xs tracking-wide text-ink"
+          className="pressable mt-5 inline-flex h-11 items-center bg-white px-5 text-[11px] tracking-[0.14em] text-ink"
         >
           {t("ctaStyle")}
         </Link>

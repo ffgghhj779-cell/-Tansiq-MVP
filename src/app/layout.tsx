@@ -16,9 +16,15 @@ const display = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "تنسيق · Tansiq — Style first, then shop",
+  title: "Tansiq · تنسيق — Style first, then shop",
   description:
-    "سوق أزياء يومي كاجوال في السعودية: تنسيق أولاً، ثم تسوق بثقة في اللون والقماش والمقاس.",
+    "Premium casual fashion marketplace for Saudi Arabia: style first, then shop with confidence in color, fabric, and fit.",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover" as const,
 };
 
 export default function RootLayout({
@@ -27,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning>
+    <html lang="en" dir="ltr" suppressHydrationWarning>
       <body
         className={`${plexArabic.variable} ${display.variable} font-sans antialiased`}
       >
