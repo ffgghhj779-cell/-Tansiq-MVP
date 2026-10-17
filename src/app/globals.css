@@ -46,13 +46,13 @@
 }
 
 :root {
-  /* Calm stone canvas — not cream terracotta, not purple */
-  --background: #f3f1ec;
-  --foreground: #1a1814;
-  --ink: #1a1814;
-  --mist: #e8e4dc;
-  --stone-warm: #d4cfc4;
-  --olive: #3f4a3c;
+  /* Elite gallery canvas — cool stone, deep olive ink */
+  --background: #f1efe9;
+  --foreground: #141210;
+  --ink: #141210;
+  --mist: #e4e0d8;
+  --stone-warm: #cdc7bb;
+  --olive: #2f3a2e;
   --card: #faf9f6;
   --card-foreground: #1a1814;
   --popover: #faf9f6;

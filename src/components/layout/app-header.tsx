@@ -13,7 +13,7 @@ export function AppHeader({ showSearch = true }: { showSearch?: boolean }) {
     <header className="sticky top-0 z-30 border-b border-border/60 bg-[#f3f1ec]/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3">
         <Link href="/home" className="shrink-0">
-          <span className="font-display text-2xl tracking-tight text-ink">
+          <span className="font-display text-[1.65rem] tracking-[0.02em] text-ink md:text-3xl">
             {tn("تنسيق", "Tansiq")}
           </span>
         </Link>

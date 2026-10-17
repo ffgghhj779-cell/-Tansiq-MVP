@@ -17,16 +17,33 @@ function ProductsInner() {
   const { t, tn } = useI18n();
   const params = useSearchParams();
   const filter = params.get("filter");
-  const [gender, setGender] = useState<"all" | "women" | "men">("all");
+  const [gender, setGender] = useState<"all" | "women" | "men">(() =>
+    filter === "women" || filter === "men" ? filter : "all",
+  );
   const [status, setStatus] = useState<"loading" | "ready" | "error" | "empty">(
     "ready",
   );
+
+  useEffect(() => {
+    if (filter === "women" || filter === "men") setGender(filter);
+  }, [filter]);
 
   const list = useMemo(() => {
     let items = [...PRODUCTS];
     if (gender !== "all") items = items.filter((p) => p.gender === gender);
     if (filter === "budget") items = items.filter((p) => p.budgetFriendly);
     if (filter === "indie") items = items.filter((p) => p.independent);
+    if (filter === "tops")
+      items = items.filter((p) =>
+        p.tags.some((t) => ["modest", "tops", "basics", "layering"].includes(t)),
+      );
+    if (filter === "layers" || filter === "outer")
+      items = items.filter((p) => p.tags.includes("outer"));
+    if (filter === "denim") items = items.filter((p) => p.tags.includes("denim"));
+    if (filter === "knit") items = items.filter((p) => p.tags.includes("knit"));
+    if (filter === "shoes") items = items.filter((p) => p.tags.includes("shoes"));
+    if (filter === "bags") items = items.filter((p) => p.tags.includes("bags"));
+    if (filter === "street") items = items.filter((p) => p.tags.includes("street"));
     return items;
   }, [gender, filter]);
 
