@@ -14,10 +14,20 @@ This slice is a complete-feeling demo with mock catalog data — no real payment
 
 ```bash
 npm install
+cp .env.example .env   # DATABASE_URL=file:./prisma/dev.db
+npx prisma migrate dev
+npm run db:seed
 npm run dev
 ```
 
 Open [http://127.0.0.1:4327](http://127.0.0.1:4327).
+
+### Phase 1 data layer
+
+- Prisma + SQLite locally (`npm run db:seed`)
+- APIs under `/api/products`, `/api/orders`, `/api/sellers`, `/api/admin/reports`
+- New screens: `/onboarding`, `/protection`, `/seller/orders`, `/admin`
+- For Vercel production DB later: set `DATABASE_URL` to Postgres (Phase 2)
 
 ## What’s included
 
