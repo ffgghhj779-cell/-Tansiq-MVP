@@ -12,9 +12,17 @@ import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const { t, tn, locale } = useI18n();
-  const { lines, parcels, remove, subtotal, deliveryTotal, grandTotal } =
+  const { lines, parcels, remove, subtotal, deliveryTotal, grandTotal, ready } =
     useCart();
   const router = useRouter();
+
+  if (!ready) {
+    return (
+      <div className="py-16 text-center text-sm text-muted-foreground">
+        {t("loading")}
+      </div>
+    );
+  }
 
   if (lines.length === 0) {
     return (
