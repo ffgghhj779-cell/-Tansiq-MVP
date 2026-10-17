@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Seller {
+  id            String    @id
+  nameAr        String
+  nameEn        String
+  cityAr        String
+  cityEn        String
+  rating        Float     @default(4.5)
+  deliveryScore Int       @default(90)
+  returnDays    Int       @default(7)
+  verified      Boolean   @default(false)
+  status        String    @default("pending") // pending | approved | suspended
+  products      Product[]
+  parcels       Parcel[]
+  createdAt     DateTime  @default(now())
+}
+
+model Product {
+  id             String   @id
+  slug           String   @unique
+  gender         String
+  titleAr        String
+  titleEn        String
+  price          Int
+  compareAt      Int?
+  sellerId       String
+  seller         Seller   @relation(fields: [sellerId], references: [id])
+  colorsJson     String
+  sizesJson      String
+  fabricAr       String
+  fabricEn       String
+  fabricChipsJson String
+  silhouetteAr   String
+  silhouetteEn   String
+  occasionAr     String
+  occasionEn     String
+  imagesJson     String
+  descriptionAr  String
+  descriptionEn  String
+  modelHeight    String?
+  modelSize      String?
+  tagsJson       String
+  independent    Boolean  @default(false)
+  budgetFriendly Boolean  @default(false)
+  published      Boolean  @default(true)
+  stockJson      String   @default("{}")
+  orderItems     OrderItem[]
+  createdAt      DateTime @default(now())
+}
+
+model Order {
+  id        String   @id
+  phone     String
+  address   String
+  payment   String   @default("cod")
+  status    String   @default("placed")
+  total     Int
+  parcels   Parcel[]
+  createdAt DateTime @default(now())
+}
+
+model Parcel {
+  id              String      @id @default(cuid())
+  orderId         String
+  order           Order       @relation(fields: [orderId], references: [id])
+  sellerId        String
+  seller          Seller      @relation(fields: [sellerId], references: [id])
+  status          String      @default("placed")
+  trackingNumber  String      @default("")
+  deliveryFee     Int         @default(20)
+  etaAr           String      @default("")
+  etaEn           String      @default("")
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  parcelId  String
+  parcel    Parcel  @relation(fields: [parcelId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  size      String
+  colorId   String
+  qty       Int
+  unitPrice Int
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  type      String
+  targetId  String
+  reason    String
+  status    String   @default("open")
+  createdAt DateTime @default(now())
+}
+
+model StyleRule {
+  id        String @id @default(cuid())
+  key       String @unique
+  reasonAr  String
+  reasonEn  String
+  weight    Int    @default(10)
+  enabled   Boolean @default(true)
+}

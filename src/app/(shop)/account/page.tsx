@@ -98,6 +98,18 @@ export default function AccountPage() {
         <Link href="/seller/upload" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
           {t("sellerUpload")}
         </Link>
+        <Link href="/seller/orders" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
+          {tn("طلبات البائع", "Seller orders")}
+        </Link>
+        <Link href="/admin" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
+          {tn("الإدارة", "Admin")}
+        </Link>
+        <Link href="/onboarding" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
+          {tn("التسجيل الأولي", "Onboarding")}
+        </Link>
+        <Link href="/protection" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
+          {tn("حماية المشتري", "Buyer protection")}
+        </Link>
         <Link href="/" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
           {tn("الصفحة التعريفية", "Marketing")}
         </Link>

@@ -1,0 +1,144 @@
+import { PrismaClient } from "@prisma/client";
+import {
+  PRODUCTS,
+  SELLERS,
+  SAMPLE_ORDERS,
+  WEAR_WITH,
+} from "../src/lib/catalog";
+
+const prisma = new PrismaClient();
+
+async function main() {
+  await prisma.orderItem.deleteMany();
+  await prisma.parcel.deleteMany();
+  await prisma.order.deleteMany();
+  await prisma.product.deleteMany();
+  await prisma.seller.deleteMany();
+  await prisma.report.deleteMany();
+  await prisma.styleRule.deleteMany();
+
+  for (const s of SELLERS) {
+    await prisma.seller.create({
+      data: {
+        id: s.id,
+        nameAr: s.nameAr,
+        nameEn: s.nameEn,
+        cityAr: s.cityAr,
+        cityEn: s.cityEn,
+        rating: s.rating,
+        deliveryScore: s.deliveryScore,
+        returnDays: s.returnDays,
+        verified: true,
+        status: "approved",
+      },
+    });
+  }
+
+  for (const p of PRODUCTS) {
+    const stock: Record<string, number> = {};
+    for (const size of p.sizes) stock[size] = 8;
+    await prisma.product.create({
+      data: {
+        id: p.id,
+        slug: p.slug,
+        gender: p.gender,
+        titleAr: p.titleAr,
+        titleEn: p.titleEn,
+        price: p.price,
+        compareAt: p.compareAt ?? null,
+        sellerId: p.sellerId,
+        colorsJson: JSON.stringify(p.colors),
+        sizesJson: JSON.stringify(p.sizes),
+        fabricAr: p.fabricAr,
+        fabricEn: p.fabricEn,
+        fabricChipsJson: JSON.stringify(p.fabricChips),
+        silhouetteAr: p.silhouetteAr,
+        silhouetteEn: p.silhouetteEn,
+        occasionAr: p.occasionAr,
+        occasionEn: p.occasionEn,
+        imagesJson: JSON.stringify(p.images),
+        descriptionAr: p.descriptionAr,
+        descriptionEn: p.descriptionEn,
+        modelHeight: p.modelHeight ?? null,
+        modelSize: p.modelSize ?? null,
+        tagsJson: JSON.stringify(p.tags),
+        independent: !!p.independent,
+        budgetFriendly: !!p.budgetFriendly,
+        published: true,
+        stockJson: JSON.stringify(stock),
+      },
+    });
+  }
+
+  for (const [productId, matches] of Object.entries(WEAR_WITH)) {
+    for (const m of matches) {
+      await prisma.styleRule.create({
+        data: {
+          key: `wear:${productId}:${m.productId}`,
+          reasonAr: m.reasonAr,
+          reasonEn: m.reasonEn,
+          weight: 10,
+          enabled: true,
+        },
+      });
+    }
+  }
+
+  for (const order of SAMPLE_ORDERS) {
+    await prisma.order.create({
+      data: {
+        id: order.id,
+        phone: "05xxxxxxx",
+        address: "Riyadh — Al Narjis",
+        payment: "cod",
+        status: "placed",
+        total: order.total,
+        createdAt: new Date(order.placedAt),
+        parcels: {
+          create: order.parcels.map((parcel) => ({
+            sellerId: parcel.sellerId,
+            status: parcel.status,
+            trackingNumber: parcel.trackingNumber === "—" ? "" : parcel.trackingNumber,
+            deliveryFee: parcel.deliveryFee,
+            etaAr: parcel.etaAr,
+            etaEn: parcel.etaEn,
+            items: {
+              create: parcel.productIds.map((pid) => {
+                const product = PRODUCTS.find((x) => x.id === pid)!;
+                return {
+                  productId: pid,
+                  size: product.sizes[0],
+                  colorId: product.colors[0],
+                  qty: 1,
+                  unitPrice: product.price,
+                };
+              }),
+            },
+          })),
+        },
+      },
+    });
+  }
+
+  await prisma.report.create({
+    data: {
+      type: "listing",
+      targetId: "p1",
+      reason: "Color looks different (sample moderation queue)",
+      status: "open",
+    },
+  });
+
+  console.log(
+    `Seeded ${SELLERS.length} sellers, ${PRODUCTS.length} products, ${SAMPLE_ORDERS.length} orders`,
+  );
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

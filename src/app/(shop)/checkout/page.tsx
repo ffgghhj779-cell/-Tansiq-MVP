@@ -16,7 +16,11 @@ export default function CheckoutPage() {
   const [phone, setPhone] = useState("05");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
+  const [address, setAddress] = useState("Riyadh — Al Narjis");
   const [confirmed, setConfirmed] = useState(false);
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (lines.length === 0 && !confirmed) {
@@ -28,7 +32,7 @@ export default function CheckoutPage() {
     return null;
   }
 
-  if (confirmed) {
+  if (confirmed && orderId) {
     return (
       <div className="mx-auto max-w-md space-y-4 py-16 text-center">
         <p className="font-display text-3xl text-ink">
@@ -36,16 +40,47 @@ export default function CheckoutPage() {
         </p>
         <p className="text-sm text-muted-foreground">
           {tn(
-            "طلب تجريبي — دفع عند الاستلام. ستصلك رسالة بما يحدث لاحقًا لكل طرد.",
-            "Demo order — cash on delivery. You’ll get next steps per parcel.",
+            "الطلب محفوظ في قاعدة البيانات — دفع عند الاستلام (OTP تجريبي).",
+            "Order saved to the database — cash on delivery (demo OTP).",
           )}
         </p>
-        <Button className="rounded-full" onClick={() => router.push("/orders/TQ-10482")}>
+        <p className="text-xs tracking-wide text-champagne">{orderId}</p>
+        <Button className="rounded-none" onClick={() => router.push(`/orders/${orderId}`)}>
           {t("track")}
         </Button>
       </div>
     );
   }
+
+  const placeOrder = async () => {
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone,
+          address,
+          lines: lines.map((l) => ({
+            productId: l.productId,
+            size: l.size,
+            colorId: l.colorId,
+            qty: l.qty,
+          })),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed");
+      setOrderId(data.order.id);
+      setConfirmed(true);
+      clear();
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-lg space-y-6 pb-10">
@@ -60,14 +95,14 @@ export default function CheckoutPage() {
             id="phone"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="rounded-full"
+            className="rounded-none"
             dir="ltr"
           />
         </div>
         {!otpSent ? (
           <Button
             variant="outline"
-            className="rounded-full"
+            className="rounded-none"
             onClick={() => setOtpSent(true)}
           >
             {t("sendOtp")}
@@ -79,7 +114,7 @@ export default function CheckoutPage() {
               id="otp"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
-              className="rounded-full"
+              className="rounded-none"
               dir="ltr"
               maxLength={4}
             />
@@ -118,27 +153,21 @@ export default function CheckoutPage() {
         <Label htmlFor="address">{tn("العنوان", "Address")}</Label>
         <Input
           id="address"
-          defaultValue={tn("الرياض — حي النرجس", "Riyadh — Al Narjis")}
-          className="rounded-full"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          className="rounded-none"
         />
-        <p className="text-xs text-muted-foreground">
-          {tn(
-            "خريطة + عنوان وطني في الإصدار الكامل.",
-            "Map + national address in the full release.",
-          )}
-        </p>
       </div>
+
+      {error && <p className="text-sm text-destructive">{error}</p>}
 
       <Button
         size="lg"
-        className="w-full rounded-full"
-        disabled={!otpSent || otp.length < 4}
-        onClick={() => {
-          setConfirmed(true);
-          clear();
-        }}
+        className="w-full rounded-none"
+        disabled={!otpSent || otp.length < 4 || submitting}
+        onClick={() => void placeOrder()}
       >
-        {t("placeOrder")}
+        {submitting ? tn("جاري الحفظ…", "Saving…") : t("placeOrder")}
       </Button>
     </div>
   );

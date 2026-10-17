@@ -52,7 +52,7 @@ export default function MarketingLanding() {
           </p>
           <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap animate-rise-delay">
             <Link
-              href="/home"
+              href="/onboarding"
               className={cn(
                 buttonVariants({ size: "lg" }),
                 "pressable h-12 w-full rounded-none bg-white px-8 text-[12px] tracking-[0.12em] text-ink hover:bg-white/93 sm:w-auto",

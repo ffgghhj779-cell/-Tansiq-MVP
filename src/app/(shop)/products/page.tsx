@@ -7,11 +7,12 @@ import {
   ProductGridSkeleton,
 } from "@/components/shared/states";
 import { Button } from "@/components/ui/button";
-import { PRODUCTS } from "@/lib/catalog";
+import { Input } from "@/components/ui/input";
+import type { Product } from "@/lib/types";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 function ProductsInner() {
   const { t, tn } = useI18n();
@@ -20,50 +21,47 @@ function ProductsInner() {
   const [gender, setGender] = useState<"all" | "women" | "men">(() =>
     filter === "women" || filter === "men" ? filter : "all",
   );
+  const [q, setQ] = useState("");
+  const [items, setItems] = useState<Product[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error" | "empty">(
-    "ready",
+    "loading",
   );
+  const [source, setSource] = useState("db");
 
   useEffect(() => {
     if (filter === "women" || filter === "men") setGender(filter);
   }, [filter]);
 
-  const list = useMemo(() => {
-    let items = [...PRODUCTS];
-    if (gender !== "all") items = items.filter((p) => p.gender === gender);
-    if (filter === "budget") items = items.filter((p) => p.budgetFriendly);
-    if (filter === "indie") items = items.filter((p) => p.independent);
-    if (filter === "tops")
-      items = items.filter((p) =>
-        p.tags.some((t) => ["modest", "tops", "basics", "layering"].includes(t)),
-      );
-    if (filter === "layers" || filter === "outer")
-      items = items.filter((p) => p.tags.includes("outer"));
-    if (filter === "denim") items = items.filter((p) => p.tags.includes("denim"));
-    if (filter === "knit") items = items.filter((p) => p.tags.includes("knit"));
-    if (filter === "shoes") items = items.filter((p) => p.tags.includes("shoes"));
-    if (filter === "bags") items = items.filter((p) => p.tags.includes("bags"));
-    if (filter === "street") items = items.filter((p) => p.tags.includes("street"));
-    return items;
-  }, [gender, filter]);
-
   useEffect(() => {
-    if (status !== "error" && status !== "loading") {
-      setStatus(list.length === 0 ? "empty" : "ready");
-    }
-  }, [list, status]);
-
-  const runFilterLoad = (next: "all" | "women" | "men") => {
-    setGender(next);
-    setStatus("loading");
-    window.setTimeout(() => {
-      setStatus("ready");
-    }, 400);
-  };
+    let cancelled = false;
+    const run = async () => {
+      setStatus("loading");
+      try {
+        const sp = new URLSearchParams();
+        if (gender !== "all") sp.set("gender", gender);
+        if (filter && filter !== "women" && filter !== "men") sp.set("filter", filter);
+        if (q.trim()) sp.set("q", q.trim());
+        const res = await fetch(`/api/products?${sp.toString()}`);
+        const data = await res.json();
+        if (cancelled) return;
+        setSource(data.source || "db");
+        const list = (data.items || []) as Product[];
+        setItems(list);
+        setStatus(list.length ? "ready" : "empty");
+      } catch {
+        if (!cancelled) setStatus("error");
+      }
+    };
+    const tmr = window.setTimeout(() => void run(), q ? 220 : 0);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(tmr);
+    };
+  }, [gender, filter, q]);
 
   if (status === "loading") return <ProductGridSkeleton />;
   if (status === "error")
-    return <ErrorState onRetry={() => setStatus("ready")} />;
+    return <ErrorState onRetry={() => setStatus("loading")} />;
   if (status === "empty")
     return (
       <EmptyState
@@ -87,7 +85,10 @@ function ProductsInner() {
             {tn("الكتالوج", "Catalog")}
           </h1>
           <p className="text-sm text-muted-foreground">
-            {list.length} {tn("قطعة", "pieces")}
+            {items.length} {tn("قطعة", "pieces")}
+            <span className="ms-2 text-[10px] uppercase tracking-wide opacity-60">
+              {source}
+            </span>
           </p>
         </div>
         <Button
@@ -100,6 +101,13 @@ function ProductsInner() {
         </Button>
       </div>
 
+      <Input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder={t("search")}
+        className="h-11 rounded-none bg-white/80"
+      />
+
       <div className="flex gap-2">
         {(
           [
@@ -111,11 +119,11 @@ function ProductsInner() {
           <button
             key={id}
             type="button"
-            onClick={() => runFilterLoad(id)}
+            onClick={() => setGender(id)}
             className={cn(
-              "rounded-full px-4 py-1.5 text-sm",
+              "rounded-none px-4 py-1.5 text-sm",
               gender === id
-                ? "bg-olive text-primary-foreground"
+                ? "bg-primary text-primary-foreground"
                 : "border border-border bg-card/60",
             )}
           >
@@ -125,7 +133,7 @@ function ProductsInner() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
-        {list.map((p) => (
+        {items.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
       </div>

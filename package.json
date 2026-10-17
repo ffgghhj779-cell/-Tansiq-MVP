@@ -6,10 +6,15 @@
     "dev": "next dev --turbopack -H 0.0.0.0 -p 4327",
     "build": "next build --turbopack",
     "start": "next start -H 0.0.0.0 -p 4327",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:reset": "prisma migrate reset --force && tsx prisma/seed.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
+    "@prisma/client": "^5.22.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cn": "^0.5.0",
@@ -30,7 +35,12 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "playwright": "^1.64.1",
+    "prisma": "^5.22.0",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }
