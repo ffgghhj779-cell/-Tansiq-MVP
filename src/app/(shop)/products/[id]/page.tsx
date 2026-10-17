@@ -58,7 +58,7 @@ export default function ProductDetailPage() {
     <div className="pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] md:pb-10">
       <div className="grid gap-6 md:grid-cols-2 md:gap-8">
         <div>
-          <div className="relative aspect-[4/5] max-h-[52vh] overflow-hidden bg-mist product-shadow md:max-h-none md:aspect-[3/4]">
+          <div className="relative aspect-[4/5] max-h-[38vh] overflow-hidden bg-mist product-shadow md:max-h-none md:aspect-[3/4]">
             <Image
               src={product.images[imageIdx]}
               alt={tn(product.titleAr, product.titleEn)}
