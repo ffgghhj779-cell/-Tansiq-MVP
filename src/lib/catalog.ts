@@ -92,7 +92,7 @@ export const CATEGORIES = [
     id: "denim",
     ar: "جينز",
     en: "Denim",
-    image: img("photo-1541099649105-f69ad21f3246", 600),
+    image: img("photo-1560243563-062bfc001d68", 600),
   },
   {
     id: "knit",
