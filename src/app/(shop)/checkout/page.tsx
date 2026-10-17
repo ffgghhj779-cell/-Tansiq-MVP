@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 
 export default function CheckoutPage() {
   const { t, tn, locale } = useI18n();
-  const { parcels, grandTotal, clear, lines } = useCart();
+  const { parcels, grandTotal, clear, lines, ready } = useCart();
   const router = useRouter();
 
   const [phone, setPhone] = useState("05");
@@ -36,10 +36,19 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!ready) return;
     if (lines.length === 0 && !confirmed) {
       router.replace("/cart");
     }
-  }, [lines.length, confirmed, router]);
+  }, [ready, lines.length, confirmed, router]);
+
+  if (!ready) {
+    return (
+      <div className="mx-auto max-w-lg py-16 text-center text-sm text-muted-foreground">
+        {t("loading")}
+      </div>
+    );
+  }
 
   if (lines.length === 0 && !confirmed) {
     return null;

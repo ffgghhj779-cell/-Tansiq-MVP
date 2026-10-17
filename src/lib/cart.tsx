@@ -19,6 +19,8 @@ export type CartLine = {
 
 type CartContextValue = {
   lines: CartLine[];
+  /** False until localStorage has been read once */
+  ready: boolean;
   add: (line: Omit<CartLine, "qty"> & { qty?: number }) => void;
   remove: (productId: string, size: string) => void;
   clear: () => void;
@@ -115,6 +117,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     return {
       lines,
+      ready: hydrated,
       add,
       remove,
       clear,
@@ -124,7 +127,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       deliveryTotal,
       grandTotal: subtotal + deliveryTotal,
     };
-  }, [lines]);
+  }, [lines, hydrated]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
