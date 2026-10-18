@@ -8,19 +8,23 @@ datasource db {
 }
 
 model Seller {
-  id            String    @id
-  nameAr        String
-  nameEn        String
-  cityAr        String
-  cityEn        String
-  rating        Float     @default(4.5)
-  deliveryScore Int       @default(90)
-  returnDays    Int       @default(7)
-  verified      Boolean   @default(false)
-  status        String    @default("pending")
-  products      Product[]
-  parcels       Parcel[]
-  createdAt     DateTime  @default(now())
+  id               String         @id
+  nameAr           String
+  nameEn           String
+  cityAr           String
+  cityEn           String
+  rating           Float          @default(4.5)
+  deliveryScore    Int            @default(90)
+  returnDays       Int            @default(7)
+  slaHours         Int            @default(72)
+  onTimeCount      Int            @default(0)
+  lateCount        Int            @default(0)
+  verified         Boolean        @default(false)
+  status           String         @default("pending")
+  products         Product[]
+  parcels          Parcel[]
+  returnRequests   ReturnRequest[]
+  createdAt        DateTime       @default(now())
 }
 
 model Product {
@@ -57,21 +61,23 @@ model Product {
 }
 
 model Order {
-  id               String    @id
+  id               String          @id
   phone            String
   address          String
-  city             String    @default("")
-  district         String    @default("")
-  shortAddress     String    @default("")
-  nationalAddress  String    @default("")
-  payment          String    @default("cod")
-  status           String    @default("placed")
+  city             String          @default("")
+  district         String          @default("")
+  shortAddress     String          @default("")
+  nationalAddress  String          @default("")
+  payment          String          @default("cod")
+  status           String          @default("placed")
   total            Int
-  otpVerified      Boolean   @default(false)
+  otpVerified      Boolean         @default(false)
   confirmedAt      DateTime?
   parcels          Parcel[]
   notifications    Notification[]
-  createdAt        DateTime  @default(now())
+  returnRequests   ReturnRequest[]
+  disputes         Dispute[]
+  createdAt        DateTime        @default(now())
 }
 
 model Parcel {
@@ -85,6 +91,8 @@ model Parcel {
   deliveryFee    Int         @default(20)
   etaAr          String      @default("")
   etaEn          String      @default("")
+  shippedAt      DateTime?
+  deliveredAt    DateTime?
   items          OrderItem[]
 }
 
@@ -130,6 +138,46 @@ model Report {
   reason    String
   status    String   @default("open")
   createdAt DateTime @default(now())
+}
+
+model ReturnRequest {
+  id           String    @id @default(cuid())
+  orderId      String
+  order        Order     @relation(fields: [orderId], references: [id])
+  sellerId     String
+  seller       Seller    @relation(fields: [sellerId], references: [id])
+  reason       String
+  notes        String    @default("")
+  status       String    @default("open")
+  refundStatus String    @default("pending")
+  deadlineAt   DateTime
+  resolvedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  disputes     Dispute[]
+}
+
+model Dispute {
+  id         String         @id @default(cuid())
+  orderId    String?
+  order      Order?         @relation(fields: [orderId], references: [id])
+  returnId   String?
+  returnReq  ReturnRequest? @relation(fields: [returnId], references: [id])
+  type       String
+  reason     String
+  status     String         @default("open")
+  createdAt  DateTime       @default(now())
+  resolvedAt DateTime?
+}
+
+model SupportTicket {
+  id        String   @id @default(cuid())
+  phone     String
+  channel   String   @default("in_app")
+  subject   String
+  body      String
+  status    String   @default("open")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model StyleRule {

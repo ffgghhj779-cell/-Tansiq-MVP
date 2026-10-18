@@ -10,6 +10,9 @@ const prisma = new PrismaClient();
 
 async function main() {
   await prisma.orderItem.deleteMany();
+  await prisma.dispute.deleteMany();
+  await prisma.returnRequest.deleteMany();
+  await prisma.supportTicket.deleteMany();
   await prisma.notification.deleteMany();
   await prisma.parcel.deleteMany();
   await prisma.order.deleteMany();
@@ -30,11 +33,30 @@ async function main() {
         rating: s.rating,
         deliveryScore: s.deliveryScore,
         returnDays: s.returnDays,
+        slaHours: 72,
+        onTimeCount: Math.max(2, Math.round(s.deliveryScore / 20)),
+        lateCount: s.deliveryScore >= 95 ? 0 : 1,
         verified: true,
         status: "approved",
       },
     });
   }
+
+  await prisma.seller.create({
+    data: {
+      id: "s-pending",
+      nameAr: "ورشة بانتظار",
+      nameEn: "Pending Atelier",
+      cityAr: "الرياض",
+      cityEn: "Riyadh",
+      rating: 0,
+      deliveryScore: 90,
+      returnDays: 7,
+      slaHours: 72,
+      verified: false,
+      status: "pending",
+    },
+  });
 
   for (const p of PRODUCTS) {
     const stock: Record<string, number> = {};
@@ -148,8 +170,43 @@ async function main() {
     },
   });
 
+  const sampleOrder = SAMPLE_ORDERS[0];
+  if (sampleOrder) {
+    const sellerId = sampleOrder.parcels[0]?.sellerId ?? "s1";
+    const ret = await prisma.returnRequest.create({
+      data: {
+        orderId: sampleOrder.id,
+        sellerId,
+        reason: "size",
+        notes: "Seed return for admin demo",
+        status: "open",
+        refundStatus: "pending",
+        deadlineAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+      },
+    });
+    await prisma.dispute.create({
+      data: {
+        orderId: sampleOrder.id,
+        returnId: ret.id,
+        type: "return_sla",
+        reason: "Seed dispute — seller response overdue (demo)",
+        status: "open",
+      },
+    });
+  }
+
+  await prisma.supportTicket.create({
+    data: {
+      phone: "0500000000",
+      channel: "in_app",
+      subject: "Where is my parcel?",
+      body: "Seed support ticket for Phase 3 admin inbox.",
+      status: "open",
+    },
+  });
+
   console.log(
-    `Seeded ${SELLERS.length} sellers, ${PRODUCTS.length} products, ${SAMPLE_ORDERS.length} orders`,
+    `Seeded ${SELLERS.length + 1} sellers, ${PRODUCTS.length} products, ${SAMPLE_ORDERS.length} orders + Phase 3 trust samples`,
   );
 }
 

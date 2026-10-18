@@ -107,15 +107,36 @@ export default function SellerOrdersPage() {
                 className="rounded-none"
                 dir="ltr"
               />
-              <Button
-                className="w-full rounded-none"
-                disabled={p.status === "shipped" || p.status === "delivered"}
-                onClick={() => void ship(p.id, p.order.id)}
-              >
-                {p.status === "shipped"
-                  ? tn("تم الشحن", "Shipped")
-                  : tn("علّم كمشحون + تتبع", "Mark shipped + tracking")}
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button
+                  className="w-full rounded-none"
+                  disabled={p.status === "shipped" || p.status === "delivered"}
+                  onClick={() => void ship(p.id, p.order.id)}
+                >
+                  {p.status === "shipped" || p.status === "delivered"
+                    ? tn("تم الشحن", "Shipped")
+                    : tn("علّم كمشحون + تتبع", "Mark shipped + tracking")}
+                </Button>
+                {(p.status === "shipped" || p.status === "out_for_delivery") && (
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-none"
+                    onClick={async () => {
+                      await fetch(`/api/orders/${p.order.id}`, {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          parcelId: p.id,
+                          status: "delivered",
+                        }),
+                      });
+                      await load(sellerId);
+                    }}
+                  >
+                    {tn("علّم كمُسلَّم (يحسب SLA)", "Mark delivered (updates SLA)")}
+                  </Button>
+                )}
+              </div>
             </div>
           ))}
         </div>

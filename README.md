@@ -27,8 +27,8 @@ Open [http://127.0.0.1:4327](http://127.0.0.1:4327).
 |-------|--------|--------|
 | 1 | Prisma foundation, product/order/seller APIs | Done |
 | 2 | OTP abstraction, stock decrement, national address, confirmation + DB tracking | Done |
-| 3 | Trust / disputes / richer admin | Next |
-| 4 | Style engine in DB | Planned |
+| 3 | Trust: admin, returns+refund, disputes, SLA, WhatsApp + tickets | Done |
+| 4 | Style engine in DB | Next |
 | 5 | Pilot launch (legal + city + support) | Planned |
 
 ### Phase 2 checkout flow

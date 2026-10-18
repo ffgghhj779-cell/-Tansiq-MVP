@@ -108,7 +108,10 @@ export default function AccountPage() {
           {tn("التسجيل الأولي", "Onboarding")}
         </Link>
         <Link href="/protection" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
-          {tn("حماية المشتري", "Buyer protection")}
+          {tn("حماية المشتري / دعم", "Buyer protection / support")}
+        </Link>
+        <Link href="/returns" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
+          {tn("إرجاع", "Returns")}
         </Link>
         <Link href="/" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
           {tn("الصفحة التعريفية", "Marketing")}

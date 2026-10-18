@@ -2,38 +2,112 @@
 
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
-import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import { useCallback, useEffect, useState } from "react";
 
-type Report = {
-  id: string;
-  type: string;
-  targetId: string;
-  reason: string;
-  status: string;
-};
+type Tab = "sellers" | "reports" | "returns" | "disputes" | "tickets" | "sla";
 
-type SellerRow = {
-  id: string;
-  nameEn: string;
-  nameAr: string;
-  status: string;
+type Overview = {
+  counts: {
+    openReports: number;
+    openDisputes: number;
+    openReturns: number;
+    openTickets: number;
+    pendingSellers: number;
+  };
+  reports: { id: string; type: string; targetId: string; reason: string; status: string }[];
+  pendingSellers: { id: string; nameAr: string; nameEn: string; status: string }[];
+  sellers: {
+    id: string;
+    nameAr: string;
+    nameEn: string;
+    status: string;
+    deliveryScore: number;
+    slaHours: number;
+    onTimeCount: number;
+    lateCount: number;
+  }[];
+  disputes: {
+    id: string;
+    type: string;
+    reason: string;
+    status: string;
+    order?: { id: string } | null;
+  }[];
+  returns: {
+    id: string;
+    reason: string;
+    status: string;
+    refundStatus: string;
+    deadlineAt: string;
+    order: { id: string; total: number };
+    seller: { nameAr: string; nameEn: string };
+  }[];
+  tickets: {
+    id: string;
+    phone: string;
+    subject: string;
+    body: string;
+    status: string;
+    channel: string;
+  }[];
 };
 
 export default function AdminPage() {
   const { tn } = useI18n();
-  const [reports, setReports] = useState<Report[]>([]);
-  const [pending, setPending] = useState<SellerRow[]>([]);
+  const [tab, setTab] = useState<Tab>("sellers");
+  const [data, setData] = useState<Overview | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const load = async () => {
-    const res = await fetch("/api/admin/reports");
-    const data = await res.json();
-    setReports(data.reports || []);
-    setPending(data.pendingSellers || []);
-  };
+  const load = useCallback(async () => {
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/overview");
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed");
+      setData(json);
+    } catch (e) {
+      setError(String(e));
+    }
+  }, []);
 
   useEffect(() => {
     void load();
-  }, []);
+  }, [load]);
+
+  const tabs: { id: Tab; ar: string; en: string; count?: number }[] = [
+    {
+      id: "sellers",
+      ar: "بائعون",
+      en: "Sellers",
+      count: data?.counts.pendingSellers,
+    },
+    {
+      id: "reports",
+      ar: "بلاغات",
+      en: "Reports",
+      count: data?.counts.openReports,
+    },
+    {
+      id: "returns",
+      ar: "إرجاع",
+      en: "Returns",
+      count: data?.counts.openReturns,
+    },
+    {
+      id: "disputes",
+      ar: "نزاعات",
+      en: "Disputes",
+      count: data?.counts.openDisputes,
+    },
+    {
+      id: "tickets",
+      ar: "تذاكر",
+      en: "Tickets",
+      count: data?.counts.openTickets,
+    },
+    { id: "sla", ar: "SLA", en: "SLA" },
+  ];
 
   return (
     <div className="mx-auto max-w-lg space-y-6 pb-10">
@@ -42,76 +116,335 @@ export default function AdminPage() {
           {tn("إدارة", "Admin")}
         </p>
         <h1 className="font-display text-3xl text-ink">
-          {tn("اعتدال ومراجعة", "Moderation")}
+          {tn("ثقة السوق", "Market trust")}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {tn(
-            "مرحلة 1: هيكل تشغيل — الموافقات تُحفظ في قاعدة البيانات.",
-            "Phase 1 shell — approvals persist in the database.",
+            "مرحلة 3: موافقات، بلاغات، إرجاع، نزاعات، تذاكر ودرجة توصيل.",
+            "Phase 3: approvals, reports, returns, disputes, tickets & delivery scores.",
           )}
         </p>
       </div>
 
-      <section className="space-y-3">
-        <h2 className="font-display text-xl">{tn("بائعون بانتظار الموافقة", "Pending sellers")}</h2>
-        {pending.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            {tn("لا يوجد بانتظار — البذرة وافقت البائعين الحاليين", "None pending — seed approved current sellers")}
-          </p>
-        ) : (
-          pending.map((s) => (
-            <div key={s.id} className="flex items-center justify-between border border-border/60 bg-sand/80 px-3 py-2 text-sm">
-              <span>{tn(s.nameAr, s.nameEn)}</span>
-              <Button
-                size="sm"
-                className="rounded-none"
-                onClick={async () => {
-                  await fetch("/api/admin/reports", {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ sellerId: s.id, status: "approved" }),
-                  });
-                  await load();
-                }}
-              >
-                {tn("موافقة", "Approve")}
-              </Button>
-            </div>
-          ))
-        )}
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="font-display text-xl">{tn("بلاغات", "Reports")}</h2>
-        {reports.map((r) => (
-          <div key={r.id} className="space-y-2 border border-border/60 bg-sand/80 p-3 text-sm">
-            <p className="font-medium">
-              {r.type} · {r.targetId}
-            </p>
-            <p className="text-muted-foreground">{r.reason}</p>
-            <div className="flex items-center justify-between">
-              <span className="text-xs">{r.status}</span>
-              {r.status === "open" && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="rounded-none"
-                  onClick={async () => {
-                    await fetch("/api/admin/reports", {
-                      method: "PATCH",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ reportId: r.id, status: "resolved" }),
-                    });
-                    await load();
-                  }}
-                >
-                  {tn("حل", "Resolve")}
-                </Button>
-              )}
-            </div>
-          </div>
+      <div className="h-scroll flex gap-2 pb-1">
+        {tabs.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setTab(item.id)}
+            className={cn(
+              "shrink-0 rounded-full px-3 py-1.5 text-xs",
+              tab === item.id
+                ? "bg-primary text-primary-foreground"
+                : "border border-border bg-sand/70",
+            )}
+          >
+            {tn(item.ar, item.en)}
+            {typeof item.count === "number" && item.count > 0
+              ? ` · ${item.count}`
+              : ""}
+          </button>
         ))}
-      </section>
+      </div>
+
+      {error && <p className="text-sm text-destructive">{error}</p>}
+      {!data && !error && (
+        <p className="text-sm text-muted-foreground">{tn("تحميل…", "Loading…")}</p>
+      )}
+
+      {data && tab === "sellers" && (
+        <section className="space-y-3">
+          <h2 className="font-display text-xl">
+            {tn("بائعون بانتظار الموافقة", "Pending sellers")}
+          </h2>
+          {data.pendingSellers.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              {tn("لا يوجد بانتظار", "None pending")}
+            </p>
+          ) : (
+            data.pendingSellers.map((s) => (
+              <div
+                key={s.id}
+                className="flex items-center justify-between border border-border/60 bg-sand/80 px-3 py-2 text-sm"
+              >
+                <span>{tn(s.nameAr, s.nameEn)}</span>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    className="rounded-none"
+                    onClick={async () => {
+                      await fetch("/api/admin/reports", {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          sellerId: s.id,
+                          status: "approved",
+                        }),
+                      });
+                      await load();
+                    }}
+                  >
+                    {tn("موافقة", "Approve")}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-none"
+                    onClick={async () => {
+                      await fetch("/api/admin/reports", {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          sellerId: s.id,
+                          status: "rejected",
+                        }),
+                      });
+                      await load();
+                    }}
+                  >
+                    {tn("رفض", "Reject")}
+                  </Button>
+                </div>
+              </div>
+            ))
+          )}
+        </section>
+      )}
+
+      {data && tab === "reports" && (
+        <section className="space-y-3">
+          <h2 className="font-display text-xl">{tn("بلاغات", "Reports")}</h2>
+          {data.reports.map((r) => (
+            <div
+              key={r.id}
+              className="space-y-2 border border-border/60 bg-sand/80 p-3 text-sm"
+            >
+              <p className="font-medium">
+                {r.type} · {r.targetId}
+              </p>
+              <p className="text-muted-foreground">{r.reason}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-xs">{r.status}</span>
+                {r.status === "open" && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-none"
+                    onClick={async () => {
+                      await fetch("/api/admin/reports", {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          reportId: r.id,
+                          status: "resolved",
+                        }),
+                      });
+                      await load();
+                    }}
+                  >
+                    {tn("حل", "Resolve")}
+                  </Button>
+                )}
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+
+      {data && tab === "returns" && (
+        <section className="space-y-3">
+          <h2 className="font-display text-xl">{tn("طلبات الإرجاع", "Return requests")}</h2>
+          {data.returns.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              {tn("لا إرجاع بعد", "No returns yet")}
+            </p>
+          ) : (
+            data.returns.map((r) => (
+              <div
+                key={r.id}
+                className="space-y-2 border border-border/60 bg-sand/80 p-3 text-sm"
+              >
+                <p className="font-medium">
+                  {r.order.id} · {tn(r.seller.nameAr, r.seller.nameEn)}
+                </p>
+                <p className="text-muted-foreground">
+                  {r.reason} · {tn("استرداد", "Refund")}: {r.refundStatus}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {tn("موعد", "Deadline")}:{" "}
+                  {new Date(r.deadlineAt).toLocaleDateString()} · {r.status}
+                </p>
+                {r.status === "open" && (
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      className="rounded-none"
+                      onClick={async () => {
+                        await fetch("/api/returns", {
+                          method: "PATCH",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            id: r.id,
+                            status: "approved",
+                            refundStatus: "refunded",
+                          }),
+                        });
+                        await load();
+                      }}
+                    >
+                      {tn("موافق + استرداد", "Approve + refund")}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="rounded-none"
+                      onClick={async () => {
+                        await fetch("/api/returns", {
+                          method: "PATCH",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            id: r.id,
+                            status: "rejected",
+                            refundStatus: "denied",
+                          }),
+                        });
+                        await load();
+                      }}
+                    >
+                      {tn("رفض", "Deny")}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </section>
+      )}
+
+      {data && tab === "disputes" && (
+        <section className="space-y-3">
+          <h2 className="font-display text-xl">{tn("نزاعات", "Disputes")}</h2>
+          {data.disputes.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              {tn("لا نزاعات مفتوحة", "No disputes")}
+            </p>
+          ) : (
+            data.disputes.map((d) => (
+              <div
+                key={d.id}
+                className="space-y-2 border border-border/60 bg-sand/80 p-3 text-sm"
+              >
+                <p className="font-medium">
+                  {d.type}
+                  {d.order ? ` · ${d.order.id}` : ""}
+                </p>
+                <p className="text-muted-foreground">{d.reason}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs">{d.status}</span>
+                  {d.status === "open" && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="rounded-none"
+                      onClick={async () => {
+                        await fetch("/api/disputes", {
+                          method: "PATCH",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            id: d.id,
+                            status: "resolved",
+                          }),
+                        });
+                        await load();
+                      }}
+                    >
+                      {tn("إغلاق", "Resolve")}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </section>
+      )}
+
+      {data && tab === "tickets" && (
+        <section className="space-y-3">
+          <h2 className="font-display text-xl">
+            {tn("تذاكر الدعم", "Support tickets")}
+          </h2>
+          {data.tickets.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              {tn("لا تذاكر", "No tickets")}
+            </p>
+          ) : (
+            data.tickets.map((tkt) => (
+              <div
+                key={tkt.id}
+                className="space-y-2 border border-border/60 bg-sand/80 p-3 text-sm"
+              >
+                <p className="font-medium">{tkt.subject}</p>
+                <p className="text-xs text-muted-foreground" dir="ltr">
+                  {tkt.phone} · {tkt.channel}
+                </p>
+                <p className="text-muted-foreground">{tkt.body}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs">{tkt.status}</span>
+                  {tkt.status === "open" && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="rounded-none"
+                      onClick={async () => {
+                        await fetch("/api/tickets", {
+                          method: "PATCH",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            id: tkt.id,
+                            status: "closed",
+                          }),
+                        });
+                        await load();
+                      }}
+                    >
+                      {tn("إغلاق", "Close")}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </section>
+      )}
+
+      {data && tab === "sla" && (
+        <section className="space-y-3">
+          <h2 className="font-display text-xl">
+            {tn("درجة التوصيل / SLA", "Delivery score / SLA")}
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            {tn(
+              "تُحدَّث عند تعليم الطرد كمُسلَّم مقارنة بساعات SLA للبائع.",
+              "Updates when a parcel is marked delivered vs the seller’s SLA hours.",
+            )}
+          </p>
+          {data.sellers.map((s) => (
+            <div
+              key={s.id}
+              className="flex items-center justify-between border border-border/60 bg-sand/80 px-3 py-2 text-sm"
+            >
+              <div>
+                <p className="font-medium">{tn(s.nameAr, s.nameEn)}</p>
+                <p className="text-xs text-muted-foreground">
+                  SLA {s.slaHours}h · on-time {s.onTimeCount} · late {s.lateCount} ·{" "}
+                  {s.status}
+                </p>
+              </div>
+              <p className="font-display text-xl text-olive">{s.deliveryScore}%</p>
+            </div>
+          ))}
+        </section>
+      )}
     </div>
   );
 }

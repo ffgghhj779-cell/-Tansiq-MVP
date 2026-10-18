@@ -42,6 +42,14 @@ type DbOrder = {
   confirmedAt: string | null;
   createdAt: string;
   notifications?: { id: string; channel: string; body: string; status: string }[];
+  returnRequests?: {
+    id: string;
+    reason: string;
+    status: string;
+    refundStatus: string;
+    deadlineAt: string;
+    seller: { nameAr: string; nameEn: string };
+  }[];
   parcels: {
     id: string;
     sellerId: string;
@@ -162,6 +170,23 @@ export default function OrderTrackingPage() {
               {n.status}
               {" — "}
               {n.body}
+            </p>
+          ))}
+        </section>
+      )}
+
+      {order.returnRequests && order.returnRequests.length > 0 && (
+        <section className="atmosphere-panel space-y-2 border border-border/50 p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {tn("إرجاع", "Returns")}
+          </p>
+          {order.returnRequests.map((r) => (
+            <p key={r.id} className="text-xs text-muted-foreground">
+              <span className="font-medium text-ink">
+                {tn(r.seller.nameAr, r.seller.nameEn)}
+              </span>
+              {" · "}
+              {r.reason} · {r.status} · {tn("استرداد", "refund")}: {r.refundStatus}
             </p>
           ))}
         </section>
