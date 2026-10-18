@@ -55,40 +55,40 @@ function MarkSvg({
       className="shrink-0"
       aria-hidden
     >
-      {/* Open ribbon T — bar + stem only, no circle / oval badge */}
+      {/* Open fashion T — straight ribbon geometry only (no arcs / circles) */}
       <path
-        d="M10 18h44"
+        d="M8 17h48"
         stroke={ink}
-        strokeWidth="5.5"
-        strokeLinecap="round"
+        strokeWidth="5.2"
+        strokeLinecap="square"
         fill="none"
       />
       <path
-        d="M32 18v34"
+        d="M32 17v36"
         stroke={ink}
-        strokeWidth="5.5"
-        strokeLinecap="round"
+        strokeWidth="5.2"
+        strokeLinecap="square"
         fill="none"
       />
       <path
-        d="M14 14.5c9 2.2 27 2.2 36 0"
+        d="M12 12.5h40"
         stroke={gold}
-        strokeWidth="2"
-        strokeLinecap="round"
+        strokeWidth="1.8"
+        strokeLinecap="square"
         fill="none"
       />
       <path
-        d="M36 22c6.5 5 10 12.5 9.5 21"
+        d="M37 22v26"
         stroke={gold}
-        strokeWidth="1.75"
-        strokeLinecap="round"
+        strokeWidth="1.8"
+        strokeLinecap="square"
         fill="none"
       />
       <path
-        d="M24 50.5h16"
+        d="M22 51h20"
         stroke={gold}
-        strokeWidth="1.75"
-        strokeLinecap="round"
+        strokeWidth="1.8"
+        strokeLinecap="square"
         fill="none"
       />
     </svg>
