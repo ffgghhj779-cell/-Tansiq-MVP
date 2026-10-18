@@ -30,12 +30,18 @@ export default function MarketingLanding() {
       <div className="relative z-10 flex min-h-dvh flex-col">
         <div className="flex items-center justify-between px-4 py-5 md:px-12">
           <div className="animate-fade-in">
-            <BrandLockup href="/home" tone="inverse" size="sm" mark="svg" />
+            <BrandLockup
+              href="/home"
+              tone="inverse"
+              size="sm"
+              mark="svg"
+              showSlogan
+            />
           </div>
           <button
             type="button"
             onClick={toggleLocale}
-            className="pressable text-[11px] uppercase tracking-[0.2em] text-white/75"
+            className="pressable shrink-0 text-[11px] uppercase tracking-[0.2em] text-white/75"
           >
             {t("lang")}
           </button>

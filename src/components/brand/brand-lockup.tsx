@@ -17,9 +17,24 @@ type BrandLockupProps = {
 };
 
 const sizeMap = {
-  sm: { mark: 28, name: "text-[1.2rem] md:text-[1.35rem]", gap: "gap-2", slogan: "text-[9px] md:text-[10px]" },
-  md: { mark: 34, name: "text-[1.45rem] md:text-[1.7rem]", gap: "gap-2.5", slogan: "text-[10px] md:text-[11px]" },
-  lg: { mark: 56, name: "text-[2.1rem] md:text-[2.85rem]", gap: "gap-3.5", slogan: "text-[11px] md:text-[13px]" },
+  sm: {
+    mark: 30,
+    name: "text-[1.15rem] leading-none md:text-[1.35rem]",
+    gap: "gap-2",
+    slogan: "text-[10px] leading-snug md:text-[11px]",
+  },
+  md: {
+    mark: 36,
+    name: "text-[1.45rem] leading-none md:text-[1.7rem]",
+    gap: "gap-2.5",
+    slogan: "text-[11px] leading-snug md:text-[12px]",
+  },
+  lg: {
+    mark: 56,
+    name: "text-[2.1rem] leading-none md:text-[2.85rem]",
+    gap: "gap-3.5",
+    slogan: "text-[13px] leading-snug md:text-[15px]",
+  },
 } as const;
 
 function MarkSvg({
@@ -104,16 +119,22 @@ export function BrandLockup({
   const s = sizeMap[size];
 
   const inner = (
-    <span className={cn("inline-flex items-center", s.gap, className)}>
+    <span
+      className={cn(
+        "inline-flex max-w-full items-start",
+        s.gap,
+        className,
+      )}
+    >
       {mark === "photo" ? (
         <MarkPhoto size={s.mark} />
       ) : (
         <MarkSvg size={s.mark} tone={tone} />
       )}
-      <span className="min-w-0 leading-none">
+      <span className="min-w-0 flex-1 pt-0.5">
         <span
           className={cn(
-            "block font-display tracking-[0.03em]",
+            "block font-display tracking-[0.02em]",
             s.name,
             tone === "inverse" ? "text-white" : "text-ink",
           )}
@@ -123,9 +144,9 @@ export function BrandLockup({
         {showSlogan && (
           <span
             className={cn(
-              "mt-1.5 block font-medium tracking-[0.16em]",
+              "mt-1 block max-w-[16rem] font-medium tracking-[0.04em] text-pretty sm:max-w-none md:tracking-[0.1em]",
               s.slogan,
-              tone === "inverse" ? "text-champagne/90" : "text-olive/90",
+              tone === "inverse" ? "text-champagne" : "text-olive",
             )}
           >
             {t("tagline")}
@@ -140,7 +161,7 @@ export function BrandLockup({
   return (
     <Link
       href={href}
-      className="pressable shrink-0"
+      className="pressable inline-flex max-w-full shrink min-w-0"
       aria-label={`${tn("تنسيق", "Tansiq")} — ${t("tagline")}`}
     >
       {inner}
