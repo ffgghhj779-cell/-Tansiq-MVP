@@ -18,19 +18,19 @@ type BrandLockupProps = {
 
 const sizeMap = {
   sm: {
-    mark: 30,
+    mark: 32,
     name: "text-[1.15rem] leading-none md:text-[1.35rem]",
     gap: "gap-2",
     slogan: "text-[10px] leading-snug md:text-[11px]",
   },
   md: {
-    mark: 36,
+    mark: 40,
     name: "text-[1.45rem] leading-none md:text-[1.7rem]",
     gap: "gap-2.5",
     slogan: "text-[11px] leading-snug md:text-[12px]",
   },
   lg: {
-    mark: 56,
+    mark: 64,
     name: "text-[2.1rem] leading-none md:text-[2.85rem]",
     gap: "gap-3.5",
     slogan: "text-[13px] leading-snug md:text-[15px]",
@@ -55,35 +55,37 @@ function MarkSvg({
       className="shrink-0"
       aria-hidden
     >
-      <circle cx="32" cy="32" r="29" stroke={ink} strokeWidth="1.25" opacity="0.3" fill="none" />
+      {/* Soft fabric-ribbon T — distinctive, no outer circle */}
       <path
-        d="M18 22.5c6.2-5.8 21.8-5.8 28 0"
-        stroke={ink}
-        strokeWidth="2.4"
+        d="M11 17c4.2-3.8 37.8-3.8 42 0-3.1 4.6-8.4 7.4-14.8 7.4H25.8C19.4 24.4 14.1 21.6 11 17Z"
+        fill={ink}
+      />
+      <path
+        d="M29.2 22.8h5.6v27.6c0 2.6-2.1 4.6-4.6 4.6h1.8c-2.2 0-4-1.8-4-4V22.8h1.2Z"
+        fill={ink}
+      />
+      <path
+        d="M15.5 19.8c8.2 2.4 24.8 2.4 33 0"
+        stroke={gold}
+        strokeWidth="2.35"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M36.2 25.5c5.4 4.1 8.6 10.2 8.2 17.2"
+        stroke={gold}
+        strokeWidth="1.7"
         strokeLinecap="round"
         fill="none"
         opacity="0.95"
       />
       <path
-        d="M20.5 26.5c5.2-4.2 17.8-4.2 23 0"
+        d="M24.8 14.2c5.6 1.2 8.8 1.2 14.4 0"
         stroke={gold}
-        strokeWidth="1.65"
+        strokeWidth="1.35"
         strokeLinecap="round"
         fill="none"
-      />
-      <path
-        d="M32 23.5V46"
-        stroke={ink}
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M26 45.5h12"
-        stroke={gold}
-        strokeWidth="1.65"
-        strokeLinecap="round"
-        fill="none"
+        opacity="0.8"
       />
     </svg>
   );
@@ -92,7 +94,7 @@ function MarkSvg({
 function MarkPhoto({ size }: { size: number }) {
   return (
     <span
-      className="relative inline-flex shrink-0 overflow-hidden rounded-full ring-1 ring-champagne/45"
+      className="relative inline-flex shrink-0 overflow-hidden"
       style={{ width: size, height: size }}
     >
       <Image
@@ -100,7 +102,7 @@ function MarkPhoto({ size }: { size: number }) {
         alt=""
         fill
         sizes={`${size}px`}
-        className="object-cover"
+        className="object-contain object-center"
         priority
       />
     </span>

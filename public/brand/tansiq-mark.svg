@@ -1,29 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-hidden="true">
-  <!-- Tansiq monogram: layered arc + stem = style / coordination -->
-  <circle cx="32" cy="32" r="29" stroke="currentColor" stroke-width="1.25" opacity="0.28"/>
-  <path
-    d="M18 22.5c6.2-5.8 21.8-5.8 28 0"
-    stroke="currentColor"
-    stroke-width="2.4"
-    stroke-linecap="round"
-    opacity="0.92"
-  />
-  <path
-    d="M20.5 26.5c5.2-4.2 17.8-4.2 23 0"
-    stroke="#C4A882"
-    stroke-width="1.6"
-    stroke-linecap="round"
-  />
-  <path
-    d="M32 23.5V46"
-    stroke="currentColor"
-    stroke-width="2.4"
-    stroke-linecap="round"
-  />
-  <path
-    d="M26 45.5h12"
-    stroke="#C4A882"
-    stroke-width="1.6"
-    stroke-linecap="round"
-  />
+  <!-- Open ribbon monogram — no circle. Overlapping folds = تنسيق / styling -->
+  <path d="M12 16.5c8.5-1.2 31.5-1.2 40 0-2.2 3.8-6.5 6.2-12.2 6.2H24.2c-5.7 0-10-2.4-12.2-6.2Z" fill="currentColor"/>
+  <path d="M28.2 21.5h7.6v28.2c0 2.4-1.9 4.3-4.3 4.3h.5c-2.1 0-3.8-1.7-3.8-3.8V21.5Z" fill="currentColor"/>
+  <path d="M14 19.2c7.8 2.6 28.2 2.6 36 0" stroke="#C4A882" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M22.5 14.8c6.2 1.4 12.8 1.4 19 0" stroke="#C4A882" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/>
+  <path d="M33.8 24.5c4.8 3.2 7.4 8.6 7.4 14.6" stroke="#C4A882" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
 </svg>
