@@ -105,15 +105,15 @@ function StyleHubInner() {
   const seed = PRODUCTS.find((p) => p.id === seedId) ?? PRODUCTS[0];
 
   return (
-    <div className="space-y-6 pb-8">
+    <div className="space-y-6 pb-20 md:pb-10">
       <div>
         <h1 className="font-display text-3xl text-ink md:text-4xl">
           {tn("مركز الستايل", "Style hub")}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 max-w-xl text-sm leading-relaxed text-muted-foreground">
           {tn(
-            "محرك إنتاج — اقتراحات من الكتالوج في قاعدة البيانات مع أسباب وقواعد لون/قماش.",
-            "Production engine — catalog suggestions from the database with color/fabric rules.",
+            "اكتشف ماذا يلبس مع ماذا — اقتراحات من الكتالوج مع أسباب واضحة للون والقماش.",
+            "Discover what goes with what — catalog suggestions with clear color and fabric reasons.",
           )}
         </p>
       </div>
@@ -175,8 +175,8 @@ function StyleHubInner() {
               <p className="text-sm font-medium">{tn(seed.titleAr, seed.titleEn)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {tn(
-                  "اقتراحات من قواعد الـ DB + تناسق اللون/القماش.",
-                  "Suggestions from DB rules + color/fabric harmony.",
+                  "اقتراحات بتناسق اللون والقماش لهذا القطعة.",
+                  "Color and fabric harmony suggestions for this piece.",
                 )}
               </p>
             </div>

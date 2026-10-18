@@ -54,7 +54,10 @@ export function BottomNav() {
                 </span>
                 <span>{t(key)}</span>
                 {active && (
-                  <span className="absolute inset-x-5 bottom-1.5 h-0.5 rounded-full bg-champagne" />
+                  <span
+                    className="absolute bottom-1.5 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-champagne"
+                    aria-hidden
+                  />
                 )}
               </Link>
             </li>

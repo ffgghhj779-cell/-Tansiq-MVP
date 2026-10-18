@@ -27,7 +27,7 @@ export function SiteFooter() {
   }, []);
 
   return (
-    <footer className="mt-12 border-t border-border/60 bg-sand/60 px-4 py-8 text-xs text-muted-foreground">
+    <footer className="mt-10 border-t border-border/60 bg-sand/60 px-4 pb-4 pt-8 text-xs text-muted-foreground md:mt-14">
       <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
         <div>
           <p className="font-display text-lg text-ink">{tn("تنسيق", "Tansiq")}</p>

@@ -31,24 +31,32 @@ export default function BuyerHomePage() {
       {/* Promo / trust — Namshi-like clarity, Tansiq tone */}
       <section
         aria-label="Trust"
-        className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-y border-border/60 bg-sand/70 py-3 text-center text-[10px] tracking-[0.04em] text-muted-foreground md:gap-x-5 md:text-[11px]"
+        className="h-scroll items-center gap-0 border-y border-border/60 bg-sand/70 py-3 text-[10px] tracking-[0.04em] text-muted-foreground md:justify-center md:gap-0 md:text-[11px]"
       >
-        <span>{t("trustDelivery")}</span>
-        <span className="text-champagne/80">|</span>
-        <span>{t("trustReturns")}</span>
-        <span className="text-champagne/80">|</span>
-        <span>{t("trustProtect")}</span>
-        <span className="text-champagne/80">|</span>
-        <span>{tn("دفع عند الاستلام", "Cash on delivery")}</span>
+        {[
+          t("trustDelivery"),
+          t("trustReturns"),
+          t("trustProtect"),
+          tn("دفع عند الاستلام", "Cash on delivery"),
+        ].map((label, i) => (
+          <span key={label} className="flex shrink-0 items-center">
+            {i > 0 && (
+              <span className="mx-3 text-champagne/80 md:mx-4" aria-hidden>
+                |
+              </span>
+            )}
+            <span className={i === 0 ? "ps-1 md:ps-0" : undefined}>{label}</span>
+          </span>
+        ))}
       </section>
 
       {/* Shop by category */}
       <section className="space-y-4">
-        <div className="flex items-end justify-between">
+        <div className="flex items-baseline justify-between gap-3">
           <h2 className="font-display text-2xl tracking-tight text-ink md:text-3xl">
             {tn("تسوق حسب القسم", "Shop by category")}
           </h2>
-          <Link href="/products" className="text-xs tracking-wide text-olive">
+          <Link href="/products" className="shrink-0 text-xs tracking-wide text-olive">
             {t("seeAll")}
           </Link>
         </div>
@@ -96,7 +104,7 @@ export default function BuyerHomePage() {
         </Link>
         <Link href="/products?filter=men" className="group relative aspect-[16/10] overflow-hidden bg-mist md:aspect-[5/3]">
           <Image
-            src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=1200&q=80"
+            src="https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?auto=format&fit=crop&w=1200&q=80"
             alt=""
             fill
             className="object-cover transition duration-700 group-hover:scale-[1.03]"
@@ -114,7 +122,7 @@ export default function BuyerHomePage() {
 
       {/* Looks for today */}
       <section className="space-y-4">
-        <div className="flex items-end justify-between">
+        <div className="flex items-baseline justify-between gap-3">
           <div>
             <h2 className="font-display text-2xl text-ink md:text-3xl">
               {t("looksToday")}
@@ -158,7 +166,7 @@ export default function BuyerHomePage() {
 
       {/* New arrivals */}
       <section className="space-y-4">
-        <div className="flex items-end justify-between">
+        <div className="flex items-baseline justify-between gap-3">
           <h2 className="font-display text-2xl text-ink md:text-3xl">
             {tn("وصل حديثًا", "New arrivals")}
           </h2>
@@ -175,7 +183,7 @@ export default function BuyerHomePage() {
 
       {/* Bestsellers */}
       <section className="space-y-4">
-        <div className="flex items-end justify-between">
+        <div className="flex items-baseline justify-between gap-3">
           <h2 className="font-display text-2xl text-ink md:text-3xl">
             {tn("الأكثر مبيعًا", "Bestsellers")}
           </h2>
@@ -192,7 +200,7 @@ export default function BuyerHomePage() {
 
       {/* Under budget */}
       <section className="space-y-4">
-        <div className="flex items-end justify-between">
+        <div className="flex items-baseline justify-between gap-3">
           <div>
             <h2 className="font-display text-2xl text-ink md:text-3xl">
               {t("underBudget")}
@@ -243,7 +251,7 @@ export default function BuyerHomePage() {
 
       {/* Premium edit */}
       <section className="space-y-4">
-        <div className="flex items-end justify-between">
+        <div className="flex items-baseline justify-between gap-3">
           <div>
             <h2 className="font-display text-2xl text-ink md:text-3xl">
               {tn("مختارات فاخرة", "Premium edit")}
@@ -262,7 +270,7 @@ export default function BuyerHomePage() {
 
       {/* Independent labels */}
       <section className="space-y-4">
-        <div className="flex items-end justify-between">
+        <div className="flex items-baseline justify-between gap-3">
           <h2 className="font-display text-2xl text-ink md:text-3xl">
             {t("indie")}
           </h2>
@@ -333,7 +341,7 @@ export default function BuyerHomePage() {
       {/* Split rails */}
       <section className="grid gap-10 md:grid-cols-2">
         <div className="space-y-4">
-          <div className="flex items-end justify-between">
+          <div className="flex items-baseline justify-between gap-3">
             <h2 className="font-display text-xl text-ink md:text-2xl">
               {tn("للنساء", "For her")}
             </h2>
@@ -348,7 +356,7 @@ export default function BuyerHomePage() {
           </div>
         </div>
         <div className="space-y-4">
-          <div className="flex items-end justify-between">
+          <div className="flex items-baseline justify-between gap-3">
             <h2 className="font-display text-xl text-ink md:text-2xl">
               {tn("للرجال", "For him")}
             </h2>

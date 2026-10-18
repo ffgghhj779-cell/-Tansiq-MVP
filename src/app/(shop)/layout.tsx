@@ -8,9 +8,9 @@ export default function ShopLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="shop-shell relative mx-auto min-h-dvh max-w-5xl">
+    <div className="shop-shell relative mx-auto min-h-dvh w-full max-w-5xl">
       <AppHeader />
-      <main className="px-3.5 pt-3.5 md:px-6 md:pt-5">{children}</main>
+      <main className="min-w-0 px-3.5 pt-3.5 md:px-6 md:pt-5">{children}</main>
       <SiteFooter />
       <BottomNav />
     </div>

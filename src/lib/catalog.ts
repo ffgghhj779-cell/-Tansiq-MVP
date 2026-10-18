@@ -80,7 +80,7 @@ export const CATEGORIES = [
     id: "tops",
     ar: "بلوزات وقمصان",
     en: "Tops & shirts",
-    image: img("photo-1594938298603-c8148c4dae35", 600),
+    image: img("photo-1603252109303-2751441dd157", 600),
   },
   {
     id: "layers",
@@ -116,7 +116,7 @@ export const CATEGORIES = [
     id: "men",
     ar: "رجال",
     en: "Men",
-    image: img("photo-1617137968427-85924c800a22", 600),
+    image: img("photo-1487222477894-8943e31ef7b2", 600),
   },
   {
     id: "street",
@@ -146,9 +146,9 @@ export const PRODUCTS: Product[] = [
     occasionAr: "يومي / مقهى",
     occasionEn: "Everyday / café",
     images: [
-      img("photo-1594938298603-c8148c4dae35"),
+      img("photo-1603252109303-2751441dd157"),
       img("photo-1602810318383-e386cc2a3ccf"),
-      img("photo-1620799140408-edc6dcb6d633"),
+      img("photo-1525507119028-ed4c629a60a3"),
     ],
     descriptionAr:
       "قميص كتان هادئ بطبقات سهلة فوق تانك أو مع جينز مستقيم — مناسب للمحافظة.",

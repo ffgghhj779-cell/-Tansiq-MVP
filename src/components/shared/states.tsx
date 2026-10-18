@@ -34,9 +34,9 @@ export function EmptyState({
   onAction?: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 px-6 py-16 text-center">
-      <p className="font-display text-2xl text-ink">{title}</p>
-      {hint && <p className="max-w-xs text-sm text-muted-foreground">{hint}</p>}
+    <div className="flex min-h-[48dvh] flex-col items-center justify-center gap-3 px-6 py-16 text-center md:min-h-[40dvh]">
+      <p className="font-display text-2xl text-ink md:text-3xl">{title}</p>
+      {hint && <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">{hint}</p>}
       {actionLabel && onAction && (
         <Button onClick={onAction} className="mt-2 rounded-full px-6">
           {actionLabel}
