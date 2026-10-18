@@ -55,37 +55,41 @@ function MarkSvg({
       className="shrink-0"
       aria-hidden
     >
-      {/* Soft fabric-ribbon T — distinctive, no outer circle */}
+      {/* Open ribbon T — bar + stem only, no circle / oval badge */}
       <path
-        d="M11 17c4.2-3.8 37.8-3.8 42 0-3.1 4.6-8.4 7.4-14.8 7.4H25.8C19.4 24.4 14.1 21.6 11 17Z"
-        fill={ink}
-      />
-      <path
-        d="M29.2 22.8h5.6v27.6c0 2.6-2.1 4.6-4.6 4.6h1.8c-2.2 0-4-1.8-4-4V22.8h1.2Z"
-        fill={ink}
-      />
-      <path
-        d="M15.5 19.8c8.2 2.4 24.8 2.4 33 0"
-        stroke={gold}
-        strokeWidth="2.35"
+        d="M10 18h44"
+        stroke={ink}
+        strokeWidth="5.5"
         strokeLinecap="round"
         fill="none"
       />
       <path
-        d="M36.2 25.5c5.4 4.1 8.6 10.2 8.2 17.2"
-        stroke={gold}
-        strokeWidth="1.7"
+        d="M32 18v34"
+        stroke={ink}
+        strokeWidth="5.5"
         strokeLinecap="round"
         fill="none"
-        opacity="0.95"
       />
       <path
-        d="M24.8 14.2c5.6 1.2 8.8 1.2 14.4 0"
+        d="M14 14.5c9 2.2 27 2.2 36 0"
         stroke={gold}
-        strokeWidth="1.35"
+        strokeWidth="2"
         strokeLinecap="round"
         fill="none"
-        opacity="0.8"
+      />
+      <path
+        d="M36 22c6.5 5 10 12.5 9.5 21"
+        stroke={gold}
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M24 50.5h16"
+        stroke={gold}
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        fill="none"
       />
     </svg>
   );

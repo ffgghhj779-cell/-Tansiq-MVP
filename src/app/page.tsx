@@ -57,7 +57,7 @@ export default function MarketingLanding() {
               tone="inverse"
               size="lg"
               showSlogan
-              mark="photo"
+              mark="svg"
             />
           </div>
           <p className="max-w-md text-[15px] leading-relaxed text-white/78 animate-rise-delay md:text-lg">
