@@ -1,5 +1,6 @@
 "use client";
 
+import { BrandLockup } from "@/components/brand/brand-lockup";
 import { useI18n } from "@/lib/i18n";
 import { useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
@@ -17,18 +18,14 @@ const deskLinks = [
 ];
 
 export function AppHeader({ showSearch = true }: { showSearch?: boolean }) {
-  const { t, toggleLocale, tn } = useI18n();
+  const { t, toggleLocale } = useI18n();
   const pathname = usePathname();
   const { count } = useCart();
 
   return (
     <header className="glass-bar sticky top-0 z-40 border-b border-border/60">
       <div className="mx-auto flex max-w-5xl items-center gap-2.5 px-3 py-2.5 md:gap-3 md:px-4 md:py-3">
-        <Link href="/home" className="shrink-0 pressable">
-          <span className="font-display text-[1.55rem] tracking-[0.03em] text-ink md:text-[1.85rem]">
-            {tn("تنسيق", "Tansiq")}
-          </span>
-        </Link>
+        <BrandLockup href="/home" size="sm" showSlogan={false} />
         {showSearch && (
           <div className="relative min-w-0 flex-1">
             <Search className="pointer-events-none absolute start-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />

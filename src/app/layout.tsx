@@ -19,6 +19,10 @@ export const metadata: Metadata = {
   title: "Tansiq · تنسيق — Style first, then shop",
   description:
     "Premium casual fashion marketplace for Saudi Arabia: style first, then shop with confidence in color, fabric, and fit.",
+  icons: {
+    icon: [{ url: "/brand/tansiq-mark.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/brand/tansiq-mark.jpg" }],
+  },
 };
 
 export const viewport = {

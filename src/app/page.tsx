@@ -1,5 +1,6 @@
 "use client";
 
+import { BrandLockup } from "@/components/brand/brand-lockup";
 import { buttonVariants } from "@/components/ui/button";
 import { HERO_IMAGE } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
@@ -28,9 +29,9 @@ export default function MarketingLanding() {
 
       <div className="relative z-10 flex min-h-dvh flex-col">
         <div className="flex items-center justify-between px-4 py-5 md:px-12">
-          <p className="font-display text-[1.85rem] tracking-[0.04em] text-white md:text-5xl animate-fade-in">
-            {tn("تنسيق", "Tansiq")}
-          </p>
+          <div className="animate-fade-in">
+            <BrandLockup href="/home" tone="inverse" size="sm" mark="svg" />
+          </div>
           <button
             type="button"
             onClick={toggleLocale}
@@ -44,9 +45,15 @@ export default function MarketingLanding() {
           <p className="text-[10px] uppercase tracking-[0.32em] text-champagne animate-fade-in">
             {tn("الرياض · جدة", "Riyadh · Jeddah")}
           </p>
-          <h1 className="font-display text-[2.45rem] leading-[1.06] text-white text-balance animate-rise md:text-6xl lg:text-7xl">
-            {t("tagline")}
-          </h1>
+          <div className="animate-rise">
+            <BrandLockup
+              href={null}
+              tone="inverse"
+              size="lg"
+              showSlogan
+              mark="photo"
+            />
+          </div>
           <p className="max-w-md text-[15px] leading-relaxed text-white/78 animate-rise-delay md:text-lg">
             {t("heroSupport")}
           </p>

@@ -1,5 +1,6 @@
 "use client";
 
+import { BrandLockup } from "@/components/brand/brand-lockup";
 import { useI18n } from "@/lib/i18n";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -30,11 +31,11 @@ export function SiteFooter() {
     <footer className="mt-10 border-t border-border/60 bg-sand/60 px-4 pb-4 pt-8 text-xs text-muted-foreground md:mt-14">
       <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
         <div>
-          <p className="font-display text-lg text-ink">{tn("تنسيق", "Tansiq")}</p>
-          <p className="mt-2 leading-relaxed">
+          <BrandLockup href="/" size="sm" showSlogan mark="svg" />
+          <p className="mt-3 leading-relaxed">
             {tn(
-              "الأسلوب أولًا، ثم التسوق — سوق كاجوال يومي للسعودية.",
-              "Style first, then shop — everyday casual marketplace for Saudi Arabia.",
+              "سوق كاجوال يومي للسعودية — لون وقماش ومقاس بثقة.",
+              "Everyday casual marketplace for Saudi Arabia — color, fabric, and fit with confidence.",
             )}
           </p>
           {config && (
