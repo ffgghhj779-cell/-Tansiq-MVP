@@ -95,10 +95,15 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply scroll-smooth;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     overflow-x: clip;
+    /* Avoid scroll-smooth on touch — it fights finger scrolling and feels sticky */
+  }
+  @media (hover: hover) and (pointer: fine) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
   body {
     @apply text-foreground antialiased;
@@ -107,21 +112,32 @@
       radial-gradient(ellipse 90% 55% at 100% -10%, rgba(196, 168, 130, 0.28), transparent 55%),
       radial-gradient(ellipse 70% 45% at -5% 40%, rgba(138, 154, 134, 0.12), transparent 50%),
       linear-gradient(165deg, #f8f4ed 0%, #f3efe8 38%, #ebe4d8 100%);
-    background-attachment: fixed;
+    /* fixed backgrounds cause severe mobile scroll jank — keep scroll on phones */
+    background-attachment: scroll;
     min-height: 100dvh;
     font-feature-settings: "kern" 1, "liga" 1;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
-    overscroll-behavior-y: none;
+    overscroll-behavior-y: auto;
     overflow-x: clip;
     max-width: 100vw;
+    /* Let the document own vertical pan everywhere */
+    touch-action: pan-y pinch-zoom;
+  }
+  @media (min-width: 768px) {
+    body {
+      background-attachment: fixed;
+      touch-action: auto;
+    }
   }
   button,
-  a {
+  a,
+  [role="button"] {
     touch-action: manipulation;
   }
   img {
-    content-visibility: auto;
+    /* Don't use content-visibility on product grids — it can hitch mid-scroll on mobile */
+    -webkit-user-drag: none;
   }
 }
 
@@ -157,20 +173,19 @@
     z-index: 50;
     width: 100%;
     max-width: 100vw;
-    /* Own compositor layer — stops jump/cut on mobile chrome resize */
-    transform: translate3d(0, 0, 0);
-    -webkit-transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    /* Avoid translateZ layers that can desync with document scroll on iOS */
     background: color-mix(in srgb, var(--sand) 94%, #fff);
     border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
     box-shadow: 0 -10px 28px -18px rgba(42, 38, 34, 0.22);
     padding-bottom: env(safe-area-inset-bottom, 0px);
+    touch-action: manipulation;
   }
   .shop-shell {
     padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 0.75rem);
     overflow-x: clip;
     max-width: 100vw;
+    /* Do not create a nested vertical scrollport */
+    overflow-y: visible;
   }
   @media (min-width: 768px) {
     .bottom-dock {
@@ -184,14 +199,20 @@
     display: flex;
     max-width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
     overscroll-behavior-x: contain;
+    /* Critical: pan-x alone traps vertical finger scrolls and feels "stuck" */
+    touch-action: pan-x pan-y;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    touch-action: pan-x;
   }
   .h-scroll::-webkit-scrollbar {
     display: none;
+  }
+  /* Children of carousels must not steal the gesture */
+  .h-scroll > * {
+    touch-action: inherit;
   }
   .animate-rise {
     animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -204,14 +225,23 @@
   }
   .animate-kenburns {
     animation: kenburns 14s ease-out both;
-    will-change: transform;
   }
   .pressable {
-    transition: transform 0.18s ease, opacity 0.18s ease;
+    transition: opacity 0.18s ease;
   }
-  .pressable:active {
-    transform: scale(0.985);
-    opacity: 0.92;
+  @media (hover: hover) and (pointer: fine) {
+    .pressable {
+      transition: transform 0.18s ease, opacity 0.18s ease;
+    }
+    .pressable:active {
+      transform: scale(0.985);
+      opacity: 0.92;
+    }
+  }
+  @media (hover: none) and (pointer: coarse) {
+    .pressable:active {
+      opacity: 0.88;
+    }
   }
 }
 
@@ -225,8 +255,11 @@
   .pressable:active {
     transform: none;
   }
+  html {
+    scroll-behavior: auto !important;
+  }
   body {
-    background-attachment: scroll;
+    background-attachment: scroll !important;
   }
 }
 

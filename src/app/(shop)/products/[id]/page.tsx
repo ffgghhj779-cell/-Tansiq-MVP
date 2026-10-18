@@ -242,7 +242,6 @@ export default function ProductDetailPage() {
         className="fixed inset-x-0 z-40 border-t border-border/70 bg-sand/95 p-3 md:hidden"
         style={{
           bottom: "calc(var(--nav-height) + env(safe-area-inset-bottom, 0px))",
-          transform: "translateZ(0)",
         }}
       >
         <div className="mx-auto flex max-w-5xl gap-2">

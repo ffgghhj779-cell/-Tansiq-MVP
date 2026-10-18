@@ -72,7 +72,7 @@ export default function BuyerHomePage() {
                   src={cat.image}
                   alt=""
                   fill
-                  className="object-cover transition duration-700 group-hover:scale-[1.04]"
+                  className="object-cover transition duration-700 md:group-hover:scale-[1.04]"
                   sizes="140px"
                 />
               </div>
@@ -91,7 +91,7 @@ export default function BuyerHomePage() {
             src={EDITORIAL_BANNER}
             alt=""
             fill
-            className="object-cover transition duration-700 group-hover:scale-[1.03]"
+            className="object-cover transition duration-700 md:group-hover:scale-[1.03]"
             sizes="(max-width:768px) 100vw, 50vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-black/10" />
@@ -107,7 +107,7 @@ export default function BuyerHomePage() {
             src="https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?auto=format&fit=crop&w=1200&q=80"
             alt=""
             fill
-            className="object-cover transition duration-700 group-hover:scale-[1.03]"
+            className="object-cover transition duration-700 md:group-hover:scale-[1.03]"
             sizes="(max-width:768px) 100vw, 50vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-black/10" />
@@ -147,7 +147,7 @@ export default function BuyerHomePage() {
                   src={look.cover}
                   alt={tn(look.titleAr, look.titleEn)}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                  className="object-cover transition-transform duration-700 md:group-hover:scale-[1.03]"
                   sizes="320px"
                 />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-4 pt-16">
@@ -322,7 +322,7 @@ export default function BuyerHomePage() {
                   src={image}
                   alt=""
                   fill
-                  className="object-cover transition duration-700 group-hover:scale-[1.03]"
+                  className="object-cover transition duration-700 md:group-hover:scale-[1.03]"
                   sizes="200px"
                 />
               )}

@@ -22,7 +22,7 @@ export function AppHeader({ showSearch = true }: { showSearch?: boolean }) {
   const { count } = useCart();
 
   return (
-    <header className="glass-bar sticky top-0 z-40 border-b border-border/60 [transform:translateZ(0)]">
+    <header className="glass-bar sticky top-0 z-40 border-b border-border/60">
       <div className="mx-auto flex max-w-5xl items-center gap-2.5 px-3 py-2.5 md:gap-3 md:px-4 md:py-3">
         <Link href="/home" className="shrink-0 pressable">
           <span className="font-display text-[1.55rem] tracking-[0.03em] text-ink md:text-[1.85rem]">

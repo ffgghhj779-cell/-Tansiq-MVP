@@ -24,7 +24,7 @@ export function ProductCard({ product }: { product: Product }) {
             fill
             sizes="(max-width: 768px) 46vw, 220px"
             quality={75}
-            className="object-cover transition-transform duration-500 ease-out will-change-transform group-hover:scale-[1.025] group-active:scale-[1.01]"
+            className="object-cover transition-transform duration-500 ease-out md:group-hover:scale-[1.025]"
           />
         </div>
         <div className="mt-2 space-y-0.5 px-0.5">
