@@ -71,10 +71,20 @@ function StyleHubInner() {
       });
       const res = await fetch(`/api/style/suggest?${q}`);
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Failed");
+      if (!res.ok) {
+        throw new Error(
+          typeof json.error === "string" && !json.error.includes("Prisma")
+            ? json.error
+            : "Style suggestions are temporarily unavailable.",
+        );
+      }
       setData(json);
     } catch (e) {
-      setError(String(e));
+      setError(
+        e instanceof Error
+          ? e.message
+          : "Style suggestions are temporarily unavailable.",
+      );
     } finally {
       setLoading(false);
     }

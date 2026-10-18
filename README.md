@@ -21,6 +21,14 @@ npm run dev
 
 Open [http://127.0.0.1:4327](http://127.0.0.1:4327).
 
+## Deploy on Vercel
+
+1. Import the GitHub repo and deploy.
+2. **Without `DATABASE_URL`:** Style hub + catalog work via static fallback (demo mode). Orders/admin persistence need a DB.
+3. **For full pilot:** create Neon/Supabase Postgres → set `DATABASE_URL` in Vercel env → redeploy → run migrations against that URL (`npx prisma migrate deploy`) and seed.
+
+SQLite (`file:…`) does **not** work on Vercel serverless.
+
 ## Phase status
 
 | Phase | Focus | Status |

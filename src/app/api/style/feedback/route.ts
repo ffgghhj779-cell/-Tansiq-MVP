@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isDatabaseConfigured } from "@/lib/db";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
+  if (!isDatabaseConfigured()) {
+    return NextResponse.json({
+      source: "catalog",
+      summary: { good: 0, not_for_me: 0, total: 0 },
+      feedback: [],
+    });
+  }
   try {
     const tool = req.nextUrl.searchParams.get("tool");
     const rows = await prisma.styleFeedback.findMany({
@@ -42,6 +50,20 @@ export async function POST(req: NextRequest) {
         { error: "vote must be good or not_for_me" },
         { status: 400 },
       );
+    }
+
+    if (!isDatabaseConfigured()) {
+      return NextResponse.json({
+        source: "catalog",
+        feedback: {
+          id: `local-${Date.now()}`,
+          tool: body.tool,
+          seedProductId: body.seedProductId || "",
+          suggestedProductId: body.suggestedProductId,
+          vote: body.vote,
+          note: body.note?.trim() || "",
+        },
+      });
     }
 
     const row = await prisma.styleFeedback.create({
