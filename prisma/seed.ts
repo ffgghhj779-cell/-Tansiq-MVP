@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import {
+  LOOKS,
   PRODUCTS,
   SELLERS,
   SAMPLE_ORDERS,
@@ -20,7 +21,9 @@ async function main() {
   await prisma.product.deleteMany();
   await prisma.seller.deleteMany();
   await prisma.report.deleteMany();
+  await prisma.styleFeedback.deleteMany();
   await prisma.styleRule.deleteMany();
+  await prisma.appSetting.deleteMany();
 
   for (const s of SELLERS) {
     await prisma.seller.create({
@@ -99,14 +102,132 @@ async function main() {
       await prisma.styleRule.create({
         data: {
           key: `wear:${productId}:${m.productId}`,
+          kind: "wear",
+          sourceId: productId,
+          targetId: m.productId,
           reasonAr: m.reasonAr,
           reasonEn: m.reasonEn,
-          weight: 10,
+          weight: 20,
           enabled: true,
         },
       });
     }
   }
+
+  const colorPairs: {
+    a: string;
+    b: string;
+    ar: string;
+    en: string;
+    w: number;
+  }[] = [
+    { a: "ivory", b: "beige", ar: "عاجي وبيج طبقة هادئة", en: "Ivory and beige — quiet tonal layers", w: 12 },
+    { a: "olive", b: "navy", ar: "زيتي مع كحلي اتزان يومي", en: "Olive with navy — everyday balance", w: 14 },
+    { a: "black", b: "white", ar: "أسود وأبيض أساس نظيف", en: "Black and white — clean base", w: 12 },
+    { a: "camel", b: "ivory", ar: "جملي يدفئ العاجي", en: "Camel warms ivory", w: 11 },
+    { a: "sand", b: "beige", ar: "رملي وبيج تدرج واحد", en: "Sand and beige — one gradient", w: 13 },
+    { a: "olive", b: "ivory", ar: "زيتي على عاجي بدون ضجيج", en: "Olive on ivory without noise", w: 10 },
+  ];
+  for (const c of colorPairs) {
+    await prisma.styleRule.create({
+      data: {
+        key: `color:${c.a}:${c.b}`,
+        kind: "color_pair",
+        sourceId: c.a,
+        targetId: c.b,
+        reasonAr: c.ar,
+        reasonEn: c.en,
+        weight: c.w,
+        enabled: true,
+      },
+    });
+  }
+
+  const fabricPairs = [
+    {
+      a: "linen",
+      b: "denim",
+      ar: "كتان يخفف ثقل الدنيم",
+      en: "Linen softens denim weight",
+      w: 12,
+    },
+    {
+      a: "cotton",
+      b: "knit",
+      ar: "قطن مع تريكو يومي مريح",
+      en: "Cotton with everyday knit comfort",
+      w: 10,
+    },
+    {
+      a: "wool",
+      b: "cotton",
+      ar: "صوف خفيف فوق قطن للطبقات",
+      en: "Light wool over cotton for layers",
+      w: 11,
+    },
+  ];
+  for (const f of fabricPairs) {
+    await prisma.styleRule.create({
+      data: {
+        key: `fabric:${f.a}:${f.b}`,
+        kind: "fabric_pair",
+        sourceId: f.a,
+        targetId: f.b,
+        reasonAr: f.ar,
+        reasonEn: f.en,
+        weight: f.w,
+        enabled: true,
+      },
+    });
+  }
+
+  for (const look of LOOKS) {
+    await prisma.styleRule.create({
+      data: {
+        key: `look:${look.id}`,
+        kind: "look",
+        sourceId: look.id,
+        targetId: "",
+        reasonAr: look.reasonAr,
+        reasonEn: look.reasonEn,
+        weight: 15,
+        enabled: true,
+        metaJson: JSON.stringify({
+          productIds: look.productIds,
+          cover: look.cover,
+          titleAr: look.titleAr,
+          titleEn: look.titleEn,
+        }),
+      },
+    });
+  }
+
+  await prisma.styleRule.create({
+    data: {
+      key: "template:budget",
+      kind: "template",
+      sourceId: "budget",
+      reasonAr: "اخترنا قطعًا من الكتالوج تكتمل معًا دون تجاوز السقف",
+      reasonEn: "Catalog pieces chosen to complete together under your cap",
+      weight: 5,
+      enabled: true,
+    },
+  });
+  await prisma.styleRule.create({
+    data: {
+      key: "template:color",
+      kind: "template",
+      sourceId: "color",
+      reasonAr: "محايدات أو تدرجات من نفس العائلة تُبقي الإطلالة هادئة",
+      reasonEn: "Neutrals or same-family tones keep the look calm",
+      weight: 5,
+      enabled: true,
+    },
+  });
+
+  await prisma.appSetting.create({
+    data: { key: "style_engine_enabled", value: "true" },
+  });
 
   for (const order of SAMPLE_ORDERS) {
     await prisma.order.create({

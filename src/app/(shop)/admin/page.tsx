@@ -5,7 +5,14 @@ import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
-type Tab = "sellers" | "reports" | "returns" | "disputes" | "tickets" | "sla";
+type Tab =
+  | "sellers"
+  | "reports"
+  | "returns"
+  | "disputes"
+  | "tickets"
+  | "sla"
+  | "style";
 
 type Overview = {
   counts: {
@@ -58,6 +65,11 @@ export default function AdminPage() {
   const [tab, setTab] = useState<Tab>("sellers");
   const [data, setData] = useState<Overview | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [styleEnabled, setStyleEnabled] = useState(true);
+  const [styleMeta, setStyleMeta] = useState<{
+    ruleCounts: { kind: string; _count: number }[];
+    feedback: { vote: string; _count: number }[];
+  } | null>(null);
 
   const load = useCallback(async () => {
     setError(null);
@@ -66,6 +78,15 @@ export default function AdminPage() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed");
       setData(json);
+      const styleRes = await fetch("/api/style/settings");
+      const styleJson = await styleRes.json();
+      if (styleRes.ok) {
+        setStyleEnabled(!!styleJson.enabled);
+        setStyleMeta({
+          ruleCounts: styleJson.ruleCounts || [],
+          feedback: styleJson.feedback || [],
+        });
+      }
     } catch (e) {
       setError(String(e));
     }
@@ -107,6 +128,7 @@ export default function AdminPage() {
       count: data?.counts.openTickets,
     },
     { id: "sla", ar: "SLA", en: "SLA" },
+    { id: "style", ar: "ستايل", en: "Style" },
   ];
 
   return (
@@ -443,6 +465,67 @@ export default function AdminPage() {
               <p className="font-display text-xl text-olive">{s.deliveryScore}%</p>
             </div>
           ))}
+        </section>
+      )}
+
+      {tab === "style" && (
+        <section className="space-y-4">
+          <h2 className="font-display text-xl">
+            {tn("محرك الستايل", "Style engine")}
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            {tn(
+              "إيقاف المحرك يخفي الاقتراحات في مركز الستايل فورًا.",
+              "Disabling the engine hides Style hub suggestions immediately.",
+            )}
+          </p>
+          <div className="flex items-center justify-between border border-border/60 bg-sand/80 px-3 py-3 text-sm">
+            <span>
+              {styleEnabled
+                ? tn("المحرّك يعمل", "Engine on")
+                : tn("المحرّك متوقف", "Engine off")}
+            </span>
+            <Button
+              size="sm"
+              className="rounded-none"
+              variant={styleEnabled ? "outline" : "default"}
+              onClick={async () => {
+                const next = !styleEnabled;
+                await fetch("/api/style/settings", {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ enabled: next }),
+                });
+                setStyleEnabled(next);
+              }}
+            >
+              {styleEnabled
+                ? tn("إيقاف", "Disable")
+                : tn("تشغيل", "Enable")}
+            </Button>
+          </div>
+          {styleMeta && (
+            <div className="space-y-2 text-sm">
+              <p className="font-medium">{tn("قواعد مفعّلة", "Active rules")}</p>
+              {styleMeta.ruleCounts.map((r) => (
+                <p key={r.kind} className="text-muted-foreground">
+                  {r.kind}: {r._count}
+                </p>
+              ))}
+              <p className="mt-3 font-medium">{tn("فيدباك", "Feedback")}</p>
+              {styleMeta.feedback.length === 0 ? (
+                <p className="text-muted-foreground">
+                  {tn("لا فيدباك بعد", "No feedback yet")}
+                </p>
+              ) : (
+                styleMeta.feedback.map((f) => (
+                  <p key={f.vote} className="text-muted-foreground">
+                    {f.vote}: {f._count}
+                  </p>
+                ))
+              )}
+            </div>
+          )}
         </section>
       )}
     </div>

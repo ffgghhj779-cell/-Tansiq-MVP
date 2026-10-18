@@ -183,8 +183,33 @@ model SupportTicket {
 model StyleRule {
   id       String  @id @default(cuid())
   key      String  @unique
+  kind     String  @default("wear")
+  /// wear: sourceId=product, targetId=product
+  /// color_pair: sourceId=color, targetId=color
+  /// fabric_pair: sourceId=fabric chip, targetId=fabric chip
+  /// look: metaJson holds productIds + cover
+  /// template: reusable reason templates (metaJson.tool)
+  sourceId String  @default("")
+  targetId String  @default("")
   reasonAr String
   reasonEn String
   weight   Int     @default(10)
   enabled  Boolean @default(true)
+  metaJson String  @default("{}")
+}
+
+model StyleFeedback {
+  id                  String   @id @default(cuid())
+  tool                String
+  seedProductId       String   @default("")
+  suggestedProductId  String
+  vote                String
+  note                String   @default("")
+  createdAt           DateTime @default(now())
+}
+
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
 }

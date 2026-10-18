@@ -28,8 +28,15 @@ Open [http://127.0.0.1:4327](http://127.0.0.1:4327).
 | 1 | Prisma foundation, product/order/seller APIs | Done |
 | 2 | OTP abstraction, stock decrement, national address, confirmation + DB tracking | Done |
 | 3 | Trust: admin, returns+refund, disputes, SLA, WhatsApp + tickets | Done |
-| 4 | Style engine in DB | Next |
+| 4 | Style engine in DB (rules, feedback, kill switch) | Done |
 | 5 | Pilot launch (legal + city + support) | Planned |
+
+### Phase 4 style engine
+
+- `GET /api/style/suggest?tool=match|complete|budget|color`
+- `POST /api/style/feedback` (`good` / `not_for_me`)
+- `GET|PATCH /api/style/settings` — kill switch `style_engine_enabled`
+- Admin → Style tab toggles the engine
 
 ### Phase 2 checkout flow
 

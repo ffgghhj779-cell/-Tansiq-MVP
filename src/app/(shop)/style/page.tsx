@@ -1,23 +1,41 @@
 "use client";
 
 import { ProductCard } from "@/components/product/product-card";
-import {
-  COLORS,
-  LOOKS,
-  PRODUCTS,
-  WEAR_WITH,
-  formatSar,
-  getProduct,
-} from "@/lib/catalog";
+import { Button } from "@/components/ui/button";
+import { COLORS, PRODUCTS, formatSar } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
+import type { Product } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 
 type Tool = "match" | "complete" | "budget" | "color";
+
+type Suggestion = {
+  product: Product;
+  reasonAr: string;
+  reasonEn: string;
+  score: number;
+};
+
+type EnginePayload = {
+  enabled: boolean;
+  source: string;
+  tool: string;
+  suggestions: Suggestion[];
+  look?: {
+    titleAr: string;
+    titleEn: string;
+    reasonAr: string;
+    reasonEn: string;
+    cover: string;
+    products: Product[];
+    total: number;
+  };
+  meta?: { sum?: number; budget?: number };
+};
 
 function StyleHubInner() {
   const { t, tn, locale } = useI18n();
@@ -28,6 +46,10 @@ function StyleHubInner() {
   const [budget, setBudget] = useState(500);
   const [colorId, setColorId] = useState("olive");
   const [occasion, setOccasion] = useState<"cafe" | "campus" | "street">("cafe");
+  const [data, setData] = useState<EnginePayload | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [votes, setVotes] = useState<Record<string, "good" | "not_for_me">>({});
 
   const tools: { id: Tool; label: string }[] = [
     { id: "match", label: t("matchTool") },
@@ -36,37 +58,51 @@ function StyleHubInner() {
     { id: "color", label: t("colorTool") },
   ];
 
-  const seed = getProduct(seedId)!;
-  const matches = WEAR_WITH[seedId] ?? WEAR_WITH.p1;
-
-  const completeLook = useMemo(() => {
-    const look =
-      LOOKS.find((l) => l.productIds.includes(seedId)) ?? LOOKS[0];
-    return look;
-  }, [seedId]);
-
-  const budgetResults = useMemo(() => {
-    const pool =
-      occasion === "street"
-        ? PRODUCTS.filter((p) => p.gender === "men")
-        : PRODUCTS.filter((p) => p.gender === "women");
-    const pick: typeof PRODUCTS = [];
-    let sum = 0;
-    for (const p of pool) {
-      if (sum + p.price <= budget) {
-        pick.push(p);
-        sum += p.price;
-      }
-      if (pick.length >= 4) break;
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const q = new URLSearchParams({
+        tool,
+        seed: seedId,
+        budget: String(budget),
+        occasion,
+        color: colorId,
+      });
+      const res = await fetch(`/api/style/suggest?${q}`);
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed");
+      setData(json);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setLoading(false);
     }
-    return { pick, sum };
-  }, [budget, occasion]);
+  }, [tool, seedId, budget, occasion, colorId]);
 
-  const colorResults = useMemo(() => {
-    return PRODUCTS.filter((p) => p.colors.includes(colorId)).slice(0, 6);
-  }, [colorId]);
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const sendFeedback = async (
+    suggestedProductId: string,
+    vote: "good" | "not_for_me",
+  ) => {
+    setVotes((prev) => ({ ...prev, [suggestedProductId]: vote }));
+    await fetch("/api/style/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tool,
+        seedProductId: seedId,
+        suggestedProductId,
+        vote,
+      }),
+    });
+  };
 
   const colorMeta = COLORS.find((c) => c.id === colorId)!;
+  const seed = PRODUCTS.find((p) => p.id === seedId) ?? PRODUCTS[0];
 
   return (
     <div className="space-y-6 pb-8">
@@ -76,8 +112,8 @@ function StyleHubInner() {
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {tn(
-            "اقتراحات من الكتالوج فقط — مع سبب عربي قصير.",
-            "Catalog-backed suggestions — with a short reason.",
+            "محرك إنتاج — اقتراحات من الكتالوج في قاعدة البيانات مع أسباب وقواعد لون/قماش.",
+            "Production engine — catalog suggestions from the database with color/fabric rules.",
           )}
         </p>
       </div>
@@ -100,7 +136,21 @@ function StyleHubInner() {
         ))}
       </div>
 
-      {tool === "match" && (
+      {data && !data.enabled && (
+        <div className="atmosphere-panel border border-border/60 px-4 py-5 text-sm text-muted-foreground">
+          {tn(
+            "محرك الستايل متوقف مؤقتًا من لوحة الإدارة.",
+            "The style engine is temporarily disabled from admin.",
+          )}
+        </div>
+      )}
+
+      {error && <p className="text-sm text-destructive">{error}</p>}
+      {loading && (
+        <p className="text-sm text-muted-foreground">{t("loading")}</p>
+      )}
+
+      {!loading && data?.enabled && tool === "match" && (
         <div className="space-y-5">
           <div className="h-scroll flex gap-3">
             {PRODUCTS.slice(0, 8).map((p) => (
@@ -124,67 +174,61 @@ function StyleHubInner() {
             <div>
               <p className="text-sm font-medium">{tn(seed.titleAr, seed.titleEn)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                {tn("اختر قطعة لترى ما يناسبها من الكتالوج.", "Pick a piece to see catalog matches.")}
+                {tn(
+                  "اقتراحات من قواعد الـ DB + تناسق اللون/القماش.",
+                  "Suggestions from DB rules + color/fabric harmony.",
+                )}
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            {matches.map((m) => {
-              const p = getProduct(m.productId)!;
-              return (
-                <div key={m.productId} className="space-y-2">
-                  <ProductCard product={p} />
-                  <p className="text-xs leading-relaxed text-muted-foreground">
-                    <span className="font-medium text-olive">{t("reason")} </span>
-                    {tn(m.reasonAr, m.reasonEn)}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+          <SuggestionGrid
+            items={data.suggestions}
+            tn={tn}
+            reasonLabel={t("reason")}
+            votes={votes}
+            onVote={sendFeedback}
+          />
         </div>
       )}
 
-      {tool === "complete" && (
+      {!loading && data?.enabled && tool === "complete" && data.look && (
         <div className="space-y-5">
           <div className="relative aspect-[16/10] overflow-hidden bg-mist md:aspect-[21/9]">
-            <Image
-              src={completeLook.cover}
-              alt=""
-              fill
-              className="object-cover"
-              sizes="100vw"
-            />
+            {data.look.cover && (
+              <Image
+                src={data.look.cover}
+                alt=""
+                fill
+                className="object-cover"
+                sizes="100vw"
+              />
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-5">
               <p className="font-display text-2xl text-white md:text-3xl">
-                {tn(completeLook.titleAr, completeLook.titleEn)}
+                {tn(data.look.titleAr, data.look.titleEn)}
               </p>
               <p className="mt-1 text-sm text-white/85">
-                {tn(completeLook.reasonAr, completeLook.reasonEn)}
+                {tn(data.look.reasonAr, data.look.reasonEn)}
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            {completeLook.productIds.map((id) => {
-              const p = getProduct(id)!;
-              return <ProductCard key={id} product={p} />;
-            })}
-          </div>
+          <SuggestionGrid
+            items={data.suggestions}
+            tn={tn}
+            reasonLabel={t("reason")}
+            votes={votes}
+            onVote={sendFeedback}
+            hideReason
+          />
           <p className="text-sm text-muted-foreground">
             {tn("المجموع التقريبي", "Approx. total")}:{" "}
-            {formatSar(
-              completeLook.productIds.reduce(
-                (s, id) => s + (getProduct(id)?.price ?? 0),
-                0,
-              ),
-              locale,
-            )}
+            {formatSar(data.look.total, locale)}
           </p>
         </div>
       )}
 
-      {tool === "budget" && (
+      {!loading && data?.enabled && tool === "budget" && (
         <div className="space-y-5">
           <div className="atmosphere-panel space-y-4 border border-border/50 p-5">
             <label className="block text-sm font-medium">
@@ -225,25 +269,20 @@ function StyleHubInner() {
           </div>
           <p className="text-sm text-muted-foreground">
             {tn("إطلالة ضمن الميزانية", "Look within budget")}:{" "}
-            {formatSar(budgetResults.sum, locale)} / {formatSar(budget, locale)}
+            {formatSar(Number(data.meta?.sum ?? 0), locale)} /{" "}
+            {formatSar(budget, locale)}
           </p>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            {budgetResults.pick.map((p) => (
-              <div key={p.id} className="space-y-2">
-                <ProductCard product={p} />
-                <p className="text-xs text-muted-foreground">
-                  {tn(
-                    "اخترنا قطعًا تكتمل معًا دون تجاوز السقف.",
-                    "Pieces chosen to complete together under your cap.",
-                  )}
-                </p>
-              </div>
-            ))}
-          </div>
+          <SuggestionGrid
+            items={data.suggestions}
+            tn={tn}
+            reasonLabel={t("reason")}
+            votes={votes}
+            onVote={sendFeedback}
+          />
         </div>
       )}
 
-      {tool === "color" && (
+      {!loading && data?.enabled && tool === "color" && (
         <div className="space-y-5">
           <div className="flex flex-wrap gap-2">
             {COLORS.map((c) => (
@@ -266,24 +305,18 @@ function StyleHubInner() {
           </div>
           <p className="text-sm text-muted-foreground">
             {tn(
-              `قطع تقترب من «${colorMeta.ar}» أو تحمله كلون أساسي.`,
-              `Pieces near “${colorMeta.en}” or carrying it as a primary.`,
+              `قطع تقترب من «${colorMeta.ar}» عبر قواعد الألوان في DB.`,
+              `Pieces near “${colorMeta.en}” via DB color rules.`,
             )}
           </p>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-            {colorResults.map((p) => (
-              <div key={p.id} className="space-y-2">
-                <ProductCard product={p} />
-                <p className="text-xs text-muted-foreground">
-                  {tn(
-                    "محايدات أو تدرجات من نفس العائلة تُبقي الإطلالة هادئة.",
-                    "Neutrals or same-family tones keep the look calm.",
-                  )}
-                </p>
-              </div>
-            ))}
-          </div>
-          {colorResults.length === 0 && (
+          <SuggestionGrid
+            items={data.suggestions}
+            tn={tn}
+            reasonLabel={t("reason")}
+            votes={votes}
+            onVote={sendFeedback}
+          />
+          {data.suggestions.length === 0 && (
             <p className="text-sm text-muted-foreground">{t("emptyList")}</p>
           )}
         </div>
@@ -295,6 +328,58 @@ function StyleHubInner() {
       >
         {tn("تصفح الكتالوج كاملًا", "Browse full catalog")}
       </Link>
+    </div>
+  );
+}
+
+function SuggestionGrid({
+  items,
+  tn,
+  reasonLabel,
+  votes,
+  onVote,
+  hideReason,
+}: {
+  items: Suggestion[];
+  tn: (ar: string, en: string) => string;
+  reasonLabel: string;
+  votes: Record<string, "good" | "not_for_me">;
+  onVote: (id: string, vote: "good" | "not_for_me") => void;
+  hideReason?: boolean;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      {items.map((m) => (
+        <div key={m.product.id} className="space-y-2">
+          <ProductCard product={m.product} />
+          {!hideReason && (
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              <span className="font-medium text-olive">{reasonLabel} </span>
+              {tn(m.reasonAr, m.reasonEn)}
+            </p>
+          )}
+          <div className="flex gap-1">
+            <Button
+              size="sm"
+              variant={votes[m.product.id] === "good" ? "default" : "outline"}
+              className="h-7 flex-1 rounded-none px-1 text-[10px]"
+              onClick={() => onVote(m.product.id, "good")}
+            >
+              {tn("مناسب", "Good")}
+            </Button>
+            <Button
+              size="sm"
+              variant={
+                votes[m.product.id] === "not_for_me" ? "default" : "outline"
+              }
+              className="h-7 flex-1 rounded-none px-1 text-[10px]"
+              onClick={() => onVote(m.product.id, "not_for_me")}
+            >
+              {tn("ليس لي", "Not for me")}
+            </Button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
