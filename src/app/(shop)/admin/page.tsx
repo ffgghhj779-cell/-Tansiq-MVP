@@ -12,7 +12,8 @@ type Tab =
   | "disputes"
   | "tickets"
   | "sla"
-  | "style";
+  | "style"
+  | "pilot";
 
 type Overview = {
   counts: {
@@ -70,6 +71,8 @@ export default function AdminPage() {
     ruleCounts: { kind: string; _count: number }[];
     feedback: { vote: string; _count: number }[];
   } | null>(null);
+  const [pilotHealth, setPilotHealth] = useState<string>("…");
+  const [errorCount24h, setErrorCount24h] = useState(0);
 
   const load = useCallback(async () => {
     setError(null);
@@ -87,6 +90,18 @@ export default function AdminPage() {
           feedback: styleJson.feedback || [],
         });
       }
+      const [healthRes, errRes] = await Promise.all([
+        fetch("/api/health"),
+        fetch("/api/errors?limit=5"),
+      ]);
+      const healthJson = await healthRes.json();
+      const errJson = await errRes.json();
+      if (healthRes.ok) {
+        setPilotHealth(
+          `${healthJson.status} · v${healthJson.version} · ${healthJson.pilotCity} · ready=${healthJson.pilotReady}`,
+        );
+      }
+      if (errRes.ok) setErrorCount24h(errJson.last24h || 0);
     } catch (e) {
       setError(String(e));
     }
@@ -129,6 +144,7 @@ export default function AdminPage() {
     },
     { id: "sla", ar: "SLA", en: "SLA" },
     { id: "style", ar: "ستايل", en: "Style" },
+    { id: "pilot", ar: "إطلاق", en: "Pilot" },
   ];
 
   return (
@@ -526,6 +542,32 @@ export default function AdminPage() {
               )}
             </div>
           )}
+        </section>
+      )}
+
+      {tab === "pilot" && (
+        <section className="space-y-4">
+          <h2 className="font-display text-xl">
+            {tn("إطلاق تجريبي", "Pilot launch")}
+          </h2>
+          <p className="text-xs text-muted-foreground" dir="ltr">
+            {pilotHealth}
+          </p>
+          <p className="text-sm">
+            {tn("أخطاء ٢٤ ساعة", "Errors (24h)")}: {errorCount24h}
+          </p>
+          <a
+            href="/pilot"
+            className="inline-flex h-9 items-center justify-center rounded-none bg-primary px-4 text-sm text-primary-foreground"
+          >
+            {tn("افتح لوحة الجاهزية", "Open readiness board")}
+          </a>
+          <a
+            href="/legal"
+            className="ms-2 inline-flex h-9 items-center justify-center rounded-none border border-border px-4 text-sm"
+          >
+            {tn("قانوني", "Legal")}
+          </a>
         </section>
       )}
     </div>

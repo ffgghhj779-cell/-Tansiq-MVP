@@ -213,3 +213,13 @@ model AppSetting {
   value     String
   updatedAt DateTime @updatedAt
 }
+
+model ClientError {
+  id        String   @id @default(cuid())
+  message   String
+  stack     String   @default("")
+  path      String   @default("")
+  userAgent String   @default("")
+  source    String   @default("client")
+  createdAt DateTime @default(now())
+}

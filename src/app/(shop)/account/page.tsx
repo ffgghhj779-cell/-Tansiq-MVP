@@ -113,6 +113,12 @@ export default function AccountPage() {
         <Link href="/returns" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
           {tn("إرجاع", "Returns")}
         </Link>
+        <Link href="/legal" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
+          {tn("قانوني", "Legal")}
+        </Link>
+        <Link href="/pilot" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
+          {tn("جاهزية الإطلاق", "Pilot")}
+        </Link>
         <Link href="/" className="inline-flex h-7 items-center px-2 text-sm text-muted-foreground hover:text-foreground">
           {tn("الصفحة التعريفية", "Marketing")}
         </Link>

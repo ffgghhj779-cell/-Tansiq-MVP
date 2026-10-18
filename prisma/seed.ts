@@ -22,6 +22,7 @@ async function main() {
   await prisma.seller.deleteMany();
   await prisma.report.deleteMany();
   await prisma.styleFeedback.deleteMany();
+  await prisma.clientError.deleteMany();
   await prisma.styleRule.deleteMany();
   await prisma.appSetting.deleteMany();
 
@@ -228,6 +229,27 @@ async function main() {
   await prisma.appSetting.create({
     data: { key: "style_engine_enabled", value: "true" },
   });
+
+  const pilotSettings: [string, string][] = [
+    ["app_version", "0.5.0-pilot"],
+    ["pilot_city", "Riyadh"],
+    ["pilot_cities", JSON.stringify(["Riyadh", "Jeddah"])],
+    ["cod_owner", "Via Consulting — COD ops (TBD)"],
+    ["legal_entity_name", "Tansiq (pending Via entity)"],
+    ["legal_cr", "Pending Via confirmation"],
+    ["legal_license", "Pending"],
+    ["legal_capital", "Pending"],
+    ["legal_status", "pending_via"],
+    ["support_email", "support@tansiq.example"],
+    ["support_phone", "+966 00 000 0000"],
+  ];
+  for (const [key, value] of pilotSettings) {
+    await prisma.appSetting.upsert({
+      where: { key },
+      create: { key, value },
+      update: { value },
+    });
+  }
 
   for (const order of SAMPLE_ORDERS) {
     await prisma.order.create({

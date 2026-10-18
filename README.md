@@ -29,7 +29,20 @@ Open [http://127.0.0.1:4327](http://127.0.0.1:4327).
 | 2 | OTP abstraction, stock decrement, national address, confirmation + DB tracking | Done |
 | 3 | Trust: admin, returns+refund, disputes, SLA, WhatsApp + tickets | Done |
 | 4 | Style engine in DB (rules, feedback, kill switch) | Done |
-| 5 | Pilot launch (legal + city + support) | Planned |
+| 5 | Pilot readiness (legal drafts, city/COD, health, backups, smoke) | Done |
+
+### Phase 5 pilot ops
+
+```bash
+npm run db:backup      # sqlite snapshot → prisma/backups/
+npm run test:pilot     # usability smoke against :4327
+```
+
+- `/legal` — draft terms/privacy + entity placeholders (Via)
+- `/pilot` — readiness checklist + launch city / COD / legal status
+- `/api/health` — DB + version + pilot city
+- `/api/errors` — client error ingest (ErrorReporter)
+- Footer shows pilot city, version, legal status from config |
 
 ### Phase 4 style engine
 
